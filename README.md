@@ -79,40 +79,59 @@ OneBot11 协议:
 ## 快速开始
 
 ```go
-// 配置Bot
-config := onebot.OneBotConfig{PlatForm: "QQ", Version: "1.0.0", Implementation: "go-cq"}
-// 创建Bot
-bot := onebot.NewOneBot(c, "123456")
-// 创建v12连接
-conn, _ := v12.NewOneBotV12Connect(v12.OneBotV12Config{
-        // 选择HTTP连接 
-        ConnectType: v12.ConnectTypeHttp,
-        HttpConfig: v12.OneBotV12HttpConfig{
-        // Host 地址
-        Host: "127.0.0.1",
-        // Port 端口
-        Port: 20003,
-    },
-})
-// 把这个连接添加到Bot中
-_ = bot.AddConnection(conn)
-// 添加一个事件处理器 : 发送消息请求
-b.AddRequestInterface(protocol.HandleActionSendMessage(func(e *protocol.RequestSendMessage) *protocol.ResponseSendMessage {
-    log.Println("收到框架事件请求 发送消息: ", e.Message)
-    // 事件回复 状态码为0正常
-    msg := protocol.NewResponseSendMessage(0)
-    // 补充动作响应 填写MessageID
-    msg.MessageId = util.GetUUID()
-    return msg
-}))
-{
-    // 上报收到私聊消息事件
-    evt := protocol.NewMessageEventPrivate()
-    // 加入消息段
-    evt.Message = append(evt.Message, protocol.GetSegmentText("你好啊"))
-    // 设置用户id
-    evt.UserId = "123456"
-    _ = bot.SendEvent(evt)
+package main
+
+import (
+	onebot "github.com/FishZe/go-libonebot"
+	v12 "github.com/FishZe/go-libonebot/connect/v12"
+	"github.com/FishZe/go-libonebot/protocol"
+	"github.com/FishZe/go-libonebot/util"
+	"log"
+	"time"
+)
+
+func main() {
+	// 创建一份配置
+	onebotConfig := onebot.OneBotConfig{PlatForm: "QQ", Version: "1.0.0", Implementation: "MyQQImpl"}
+	// 创建一个bot
+	bot := onebot.NewOneBot(onebotConfig, "123456")
+	// 创建一个连接
+	conn, _ := v12.NewOneBotV12Connect(v12.OneBotV12Config{
+		// 连接类型
+		// Http
+		ConnectType: v12.ConnectTypeHttp,
+		HttpConfig: v12.OneBotV12HttpConfig{
+			Host:            "127.0.0.1",
+			Port:            20003,
+			EventEnable:     true,
+			EventBufferSize: 500,
+		},
+	})
+	// 把连接加入到bot
+	_ = bot.AddConnection(conn)
+	// 创建一个事件处理器
+	mux := onebot.NewActionMux()
+	mux.AddRequestInterface(protocol.HandleActionSendMessage(func(e *protocol.RequestSendMessage) *protocol.ResponseSendMessage {
+		// 处理发送消息动作
+		log.Println("SendMessage: ", e.Message)
+		msg := protocol.NewResponseSendMessage(0)
+		msg.MessageId = util.GetUUID()
+		return msg
+	}))
+	// 把事件处理器加入到bot
+	bot.Handle(mux)
+	for {
+		// 每20秒发送一个收到私聊信息的事件
+		e := protocol.NewMessageEventPrivate()
+		// 消息为 "今天吃什么"
+		e.Message = append(e.Message, protocol.GetSegmentText("今天吃什么"))
+		e.UserId = "123456"
+		err = bot.SendEvent(e)
+		if err != nil {
+			log.Println(err)
+		}
+		time.Sleep(20 * time.Second)
+	}
 }
 ```
 

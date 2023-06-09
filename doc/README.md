@@ -113,10 +113,29 @@ struct {
 在发送时, 所有的导出字段都将会`json`编码后作为`data`字段发送.
 
 ### 处理请求
+
+首先创建一个动作请求处理器
     
 ```go
-bot.AddRequestInterface(string, protocol.RequestInterface)
+mux := onebot.NewActionMux()
 ```
+
+然后, 在处理器中添加你需要处理的动作
+```
+mux.AddRequestInterface(protocol.HandleActionSendMessage(func(e *protocol.RequestSendMessage) *protocol.ResponseSendMessage {
+		// 处理发送消息动作
+		log.Println("SendMessage: ", e.Message)
+		msg := protocol.NewResponseSendMessage(0)
+		msg.MessageId = util.GetUUID()
+		return msg
+	}))
+```
+
+最后, 把处理器加入到bot实例中
+```go
+bot.Handle(mux)
+```
+
 GoLibOneBot内置了所有的`v12`协议的请求, 你可以直接使用.
 
 其中, `HandleActionxxx`参数为一个函数, 函数传入一个`RequestXXX`, 返回一个`ResponseXXX`, 例如:
@@ -125,7 +144,7 @@ GoLibOneBot内置了所有的`v12`协议的请求, 你可以直接使用.
 
 
 ```go
-bot.AddRequestInterface(protocol.HandleActionSendMessage(func(e *protocol.RequestSendMessage) *protocol.ResponseSendMessage {
+mux.AddRequestInterface(protocol.HandleActionSendMessage(func(e *protocol.RequestSendMessage) *protocol.ResponseSendMessage {
     msg := protocol.NewResponseSendMessage(0)
     msg.MessageId = util.GetUUID()
     return msg
@@ -140,8 +159,7 @@ struct ResponseXXX {
     *protocol.Response
     // 你的字段
 }
-
-
+```
 然后, 实现一个`RequestInterface`:
 
 ```go
