@@ -34,7 +34,7 @@ func (r *RequestGetLatestEvents) Do() any {
 	resp := r.f(r)
 	newEvents := make([]any, 0)
 	for _, v := range resp.Events {
-		if _, err := EventCheck(r.Self, v); err == nil {
+		if _, _, err := EventCheck(r.Self, v); err == nil {
 			newEvents = append(newEvents, v)
 		}
 	}

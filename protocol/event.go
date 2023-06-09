@@ -87,6 +87,10 @@ func NewMetaEventStatusUpdate() (e *MetaEventStatusUpdate) {
 	e.Event = new(Event)
 	e.Event.Type = ActionTypeMeta
 	e.Event.DetailType = "status_update"
+	e.Status.Bots = make([]struct {
+		Self   Self `json:"self"`
+		Online bool `json:"online"`
+	}, 0)
 	return
 }
 

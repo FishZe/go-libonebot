@@ -5,7 +5,7 @@ import "github.com/FishZe/go-libonebot/protocol"
 // Connection connection接口 可自定义
 type Connection interface {
 	// ConnectSendEvent 发送事件
-	ConnectSendEvent(e any, eId string) error
+	ConnectSendEvent(e any, eId string, eType string) error
 	// ConnectSendResponse 发送响应
 	ConnectSendResponse(e any) error
 	// AddBot 添加了一个Bot
