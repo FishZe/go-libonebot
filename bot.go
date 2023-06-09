@@ -3,7 +3,9 @@ package go_libonebot
 import (
 	"github.com/FishZe/go-libonebot/connect"
 	"github.com/FishZe/go-libonebot/protocol"
+	"github.com/FishZe/go-libonebot/util"
 	"sync"
+	"time"
 )
 
 // Bot 一个oneBot实例
@@ -21,8 +23,10 @@ type Bot struct {
 	}
 	// requestChan 请求通道
 	requestChan chan protocol.RawRequestType
-	// requestHandleFunc 请求处理函数
-	requestHandleFunc sync.Map
+	// handleMux 请求处理接口
+	handleMux *ActionMux
+	// heartBeatInterval 心跳间隔
+	heartBeatInterval int
 }
 
 // NewOneBot 获取一个OneBot实例
@@ -36,8 +40,16 @@ func NewOneBot(config OneBotConfig, userId string) (b *Bot) {
 		PlatForm: config.PlatForm,
 		UserId:   userId,
 	}
+	if config.HeartBeat.Enable {
+		if config.HeartBeat.Interval <= 0 {
+			b.heartBeatInterval = 5000
+		} else {
+			b.heartBeatInterval = config.HeartBeat.Interval
+		}
+	}
 	b.requestChan = make(chan protocol.RawRequestType, 65535)
 	b.startRequestChan()
+	go b.startHeartBeat()
 	return
 }
 
@@ -56,4 +68,23 @@ func (b *Bot) AddConnection(c connect.Connection) error {
 	// 加入所有连接
 	b.connections.Store(c.GetUUID(), &c)
 	return nil
+}
+
+// Handle 绑定处理器
+func (b *Bot) Handle(mux *ActionMux) {
+	b.handleMux = mux
+}
+
+func (b *Bot) startHeartBeat() {
+	if b.heartBeatInterval <= 0 {
+		return
+	}
+	for {
+		e := protocol.NewMetaEventHeartbeat()
+		e.Interval = b.heartBeatInterval
+		if err := b.SendEvent(e); err != nil {
+			util.Logger.Error("send heartbeat error: " + err.Error())
+		}
+		time.Sleep(time.Duration(b.heartBeatInterval) * time.Millisecond)
+	}
 }

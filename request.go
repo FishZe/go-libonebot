@@ -33,8 +33,8 @@ func (b *Bot) startRequestChan() {
 						r.Message = "request action is empty"
 						res = r
 					} else {
-						x, ok := b.requestHandleFunc.Load(request.Request.Action)
-						if !ok {
+						x := b.handleMux.GetRequestInterface(request.Request.Action)
+						if x == nil {
 							// 找不到: 不支持的动作请求	OneBot 实现没有实现该动作
 							util.Logger.Debug("request action not found: " + request.Request.Action)
 							r := protocol.NewEmptyResponse(protocol.ResponseCodeUnsupportedAction)
@@ -42,7 +42,7 @@ func (b *Bot) startRequestChan() {
 							res = r
 						} else {
 							util.Logger.Debug("request action found: " + request.Request.Action + " / " + request.Request.GetID() + "handling...")
-							handleInterface := x.(protocol.RequestInterface).New()
+							handleInterface := x.New()
 							// 拷贝过来
 							err := copier.Copy(handleInterface, x)
 							if err != nil {
@@ -70,13 +70,4 @@ func (b *Bot) startRequestChan() {
 			}
 		}
 	}()
-}
-
-// AddRequestInterface 添加一个请求处理接口
-//
-// action: 请求的action名称
-//
-// f: 请求处理接口 protocol.RequestInterface 的实现
-func (b *Bot) AddRequestInterface(action string, f protocol.RequestInterface) {
-	b.requestHandleFunc.Store(action, f)
 }
