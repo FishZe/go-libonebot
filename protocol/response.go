@@ -2,27 +2,6 @@ package protocol
 
 import "github.com/FishZe/go-libonebot/util"
 
-// Response 动作响应
-// Reference: https://12.onebot.dev/connect/data-protocol/action-response/
-type Response struct {
-	// Status 响应状态
-	// 必须为 StatusOk 或 StatusFailed
-	Status string `json:"status"`
-	// RetCode 返回码 对应上文的 ResponseCodeXXX
-	Retcode int `json:"retcode"`
-	// Message 错误信息，当动作执行失败时，建议在此填写人类可读的错误信息，当执行成功时，应为空字符串
-	Message string `json:"message"`
-	// Echo 应原样返回动作请求中的 echo 字段值
-	Echo string `json:"echo"`
-	// requestID 内部标识字段
-	requestID string
-}
-
-// GetID 获取请求ID
-func (r *Response) GetID() string {
-	return r.requestID
-}
-
 // EmptyResponse 空响应
 type EmptyResponse struct {
 	*Response

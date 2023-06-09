@@ -19,7 +19,8 @@ func (o *OneBotV12) ConnectSendEvent(e any, eid string) error {
 		util.Logger.Warning("onebot v12 marshal event error: " + err.Error())
 		return err
 	}
-	return o.connect.Send(s, sendTypeResponse, eid)
+	util.Logger.Debug("onebot v12 send event: " + eid)
+	return o.connect.Send(s, SendTypeEvent, eid)
 }
 
 // ConnectSendResponse 发送响应
@@ -64,6 +65,7 @@ func (o *OneBotV12) ConnectSendResponse(e any) error {
 		util.Logger.Warning("onebot v12 marshal response error: " + err.Error())
 		return err
 	}
+	util.Logger.Debug("onebot v12 send response: " + newV12Response.GetID())
 	return o.connect.Send(s, sendTypeResponse, newV12Response.GetID())
 }
 
@@ -78,6 +80,8 @@ func (o *OneBotV12) receiveMessage(b []byte) (string, error) {
 	x.Request.NewID()
 	x.Request.ConnectionUUID = o.GetUUID()
 	if len(o.botList) == 1 {
+		// 试图补充self字段
+		// 方便后续使用
 		o.botId.Range(func(k any, v any) bool {
 			x.Self = k.(protocol.Self)
 			return false
@@ -93,10 +97,21 @@ func (o *OneBotV12) receiveMessage(b []byte) (string, error) {
 				ch.(chan protocol.RawRequestType) <- x
 			} else {
 				util.Logger.Warning("onebot v12 receive message error: chan not exist")
+				go func(id string) {
+					e := protocol.NewEmptyResponse(protocol.ResponseCodeInternalHandlerError)
+					e.SetID(x.Request.GetID())
+					_ = o.ConnectSendResponse(e)
+				}(x.Request.GetID())
 			}
 		} else {
 			util.Logger.Warning("onebot v12 receive message error: self not exist")
+			go func(id string) {
+				e := protocol.NewEmptyResponse(protocol.ResponseCodeUnknownSelf)
+				e.SetID(id)
+				_ = o.ConnectSendResponse(e)
+			}(x.Request.GetID())
 		}
 	}
+	util.Logger.Debug("onebot v12 receive message: " + x.Request.GetID())
 	return x.Request.GetID(), nil
 }

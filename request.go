@@ -41,6 +41,7 @@ func (b *Bot) startRequestChan() {
 							r.Message = "unsupported action: " + request.Request.Action
 							res = r
 						} else {
+							util.Logger.Debug("request action found: " + request.Request.Action + " / " + request.Request.GetID() + "handling...")
 							handleInterface := x.(protocol.RequestInterface).New()
 							// 拷贝过来
 							err := copier.Copy(handleInterface, x)
@@ -53,6 +54,7 @@ func (b *Bot) startRequestChan() {
 									res = protocol.NewEmptyResponse(protocol.ResponseCodeBadParam)
 								} else {
 									res = handleInterface.(protocol.RequestInterface).Do()
+									util.Logger.Debug("request action: " + request.Request.Action + " / " + request.Request.GetID() + " handled")
 								}
 							}
 						}

@@ -20,10 +20,15 @@ func GetTimeStampFloat64() float64 {
 	return float64(time.Now().UnixMilli()) / 1000
 }
 
-// GetTimeStamp 获取当前时间戳
+// GetTimeStamp 获取当前时间戳 秒
 // 备用
 func GetTimeStamp() int64 {
 	return time.Now().Unix()
+}
+
+// GetNanoTimeStamp 获取当前时间戳 纳秒
+func GetNanoTimeStamp() int64 {
+	return time.Now().UnixNano()
 }
 
 // GetFormatTime 获取当前时间的格式化字符串

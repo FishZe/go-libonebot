@@ -48,15 +48,22 @@ func (c *OneBotV12ConnectWebhook) returnRequest(b []byte) error {
 			_, _ = c.receiveFunc(r)
 		}
 	}
+	util.Logger.Debug("onebot v12 webhook receive request")
 	return nil
 }
 
 // Send 发送事件
 func (c *OneBotV12ConnectWebhook) Send(b []byte, t int, e string) error {
+	ticker := util.NewTicker()
+	defer func() {
+		ticker.Stop()
+		util.Logger.Debug("onebot v12 webhook handle action cost: " + ticker.GetDurationString())
+	}()
 	// OneBot 实现应该根据用户配置，在发生事件时，向指定的 url 使用 POST 请求推送事件，并根据情况将 HTTP 响应体的内容解析为动作请求列表，依次处理，丢弃动作响应。
 	if t == sendTypeResponse {
 		return nil
 	} else if t == SendTypeEvent {
+		util.Logger.Debug("onebot v12 webhook send event: " + e)
 		client := &http.Client{
 			CheckRedirect: func(req *http.Request, via []*http.Request) error {
 				return http.ErrUseLastResponse

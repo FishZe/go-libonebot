@@ -36,6 +36,7 @@ var (
 func EventCheck(s Self, e any) (string, error) {
 	// 寻找是否存在Event类型字段
 	if reflect.TypeOf(e).Kind() != reflect.Ptr || reflect.TypeOf(e).Elem().Kind() != reflect.Struct {
+		util.Logger.Warning("EventCheck: arg not a onebot event struct")
 		return "", ErrorInvalidEvent
 	}
 	eventId := -1
@@ -49,15 +50,18 @@ func EventCheck(s Self, e any) (string, error) {
 	// 不存在Event类型字段
 	if eventId == -1 {
 		// 该结构体不是一个OneBot事件
+		util.Logger.Warning("EventCheck: arg not a onebot event struct")
 		return "", ErrorInvalidEvent
 	}
 	// 存在Event类型字段
 	if !reflect.ValueOf(e).Elem().Field(eventId).IsValid() || reflect.ValueOf(e).Elem().Field(eventId).IsNil() {
+		util.Logger.Warning("EventCheck: event not valid")
 		return "", ErrorInvalidEvent
 	}
 	newEvent := reflect.ValueOf(e).Elem().Field(eventId).Interface().(*Event)
 	if newEvent.Type == "" || (newEvent.Type != ActionTypeMessage && newEvent.Type != ActionTypeMeta && newEvent.Type != ActionTypeNotice && newEvent.Type != ActionTypeRequest) {
 		// 事件类型无效
+		util.Logger.Warning("EventCheck: event not valid")
 		return "", ErrorInValidEventType
 	}
 	// 事件ID和时间戳为空时, 设置默认值
@@ -68,5 +72,6 @@ func EventCheck(s Self, e any) (string, error) {
 		newEvent.Time = util.GetTimeStampFloat64()
 	}
 	newEvent.Self = s
+	util.Logger.Debug("event check: " + newEvent.ID + " success")
 	return newEvent.ID, nil
 }

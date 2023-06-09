@@ -55,6 +55,7 @@ func (c *OneBotV12ConnectWebsocketReverse) startWebsocketClient() {
 		}
 		c.conn, _, err = websocket.DefaultDialer.Dial(c.config.Url, header)
 		if err == nil {
+			util.Logger.Debug("onebot v12 websocket reverse connect success")
 			go func() {
 				for {
 					select {

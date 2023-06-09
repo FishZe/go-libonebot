@@ -39,6 +39,10 @@ func (r *Request) GetID() string {
 	return r.requestID
 }
 
+func (r *Request) SetID(s string) {
+	r.requestID = s
+}
+
 // RawRequestType 最原始的动作请求, 用于兼容和各种连接交互
 type RawRequestType struct {
 	// *Request 请求头
@@ -50,12 +54,14 @@ type RawRequestType struct {
 // RawRequestTypeToRequest 将RawRequestType转换为Request
 func RawRequestTypeToRequest(e any, r RawRequestType) error {
 	if reflect.TypeOf(e).Kind() != reflect.Ptr || reflect.TypeOf(e).Elem().Kind() != reflect.Struct {
+		util.Logger.Warning("RawRequestType To Request: arg not a onebot request struct")
 		return ErrorInvalidRequest
 	}
 	t := reflect.TypeOf(e).Elem()
 	v := reflect.ValueOf(e).Elem()
 	// 类型不对
 	if reflect.ValueOf(e).Elem().Kind() != reflect.Struct || reflect.ValueOf(e).Elem() == reflect.Zero(t) {
+		util.Logger.Warning("RawRequestType To Request: arg not a onebot request struct")
 		return ErrorInvalidRequest
 	}
 	findRequest := false
@@ -88,10 +94,13 @@ func RawRequestTypeToRequest(e any, r RawRequestType) error {
 		Result:      e,
 	}); err == nil {
 		if err = decoder.Decode(r.Param); err == nil {
+			util.Logger.Debug("request " + r.requestID + " decode & check success")
 			return nil
 		}
+		util.Logger.Warning("RawRequestType To Request: decode error: " + err.Error())
 		return err
 	} else {
+		util.Logger.Warning("RawRequestType To Request: decode error: " + err.Error())
 		return err
 	}
 }

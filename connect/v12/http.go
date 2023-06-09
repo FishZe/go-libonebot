@@ -1,6 +1,7 @@
 package v12
 
 import (
+	"errors"
 	"fmt"
 	"github.com/FishZe/go-libonebot/util"
 	"io"
@@ -8,6 +9,11 @@ import (
 	"strconv"
 	"sync"
 	"time"
+)
+
+var (
+	// ErrorResponseIDNotFound 响应ID未找到
+	ErrorResponseIDNotFound = errors.New("response id not found")
 )
 
 // OneBotV12HttpConfig HTTP 连接配置
@@ -18,6 +24,9 @@ type OneBotV12HttpConfig struct {
 	Port int
 	// AccessToken 访问令牌
 	AccessToken string
+	// TimeOut 超时时间
+	// 如果开发者在该时间内没有给出相应, 自动503
+	TimeOut int
 	// 这几个参数应该由开发者自己实现
 	//
 	// EventEnable 是否启用 get_latest_events 元动作
@@ -35,9 +44,23 @@ type OneBotV12ConnectHttp struct {
 
 func (c *OneBotV12ConnectHttp) Send(b []byte, t int, e string) error {
 	if t == sendTypeResponse {
-		if r, ok := c.requestCallBack.Load(e); ok {
-			r.(chan []byte) <- b
+		var try = 0
+		// 尝试等待3秒 如果3秒内没有收到响应ID 则返回错误
+		for {
+			if r, ok := c.requestCallBack.Load(e); ok {
+				r.(chan []byte) <- b
+				return nil
+			}
+			if try > 10 {
+				util.Logger.Warning("onebot v12 http server send response timeout")
+				return ErrorResponseIDNotFound
+			}
+			try++
+			time.Sleep(time.Millisecond * 300)
 		}
+	} else {
+		// TODO: get_latest_events
+		util.Logger.Debug("onebot v12 http server throw event: " + e)
 	}
 	return nil
 }
@@ -57,10 +80,13 @@ func NewOneBotV12ConnectHttp(config *OneBotV12HttpConfig) (*OneBotV12ConnectHttp
 }
 
 func (c *OneBotV12ConnectHttp) receiveHandler(w http.ResponseWriter, r *http.Request) {
+	ticker := util.NewTicker()
 	defer func() {
 		if err := r.Body.Close(); err != nil {
 			util.Logger.Warning("onebot v12 http server close body error: " + err.Error())
 		}
+		ticker.Stop()
+		util.Logger.Debug("onebot v12 http server handle action cost: " + ticker.GetDurationString())
 	}()
 	util.Logger.Debug("onebot v12 http server receive request: " + r.Method + " " + r.Header.Get("Content-Type"))
 	// 如果收到非 POST 请求，可以返回 HTTP 状态码 405 Method Not Allowed
@@ -155,10 +181,10 @@ func (c *OneBotV12ConnectHttp) Start() error {
 	util.Logger.Debug("starting onebot v12 http server...")
 	s := http.NewServeMux()
 	s.HandleFunc("/", c.receiveHandler)
+	mux := http.TimeoutHandler(s, time.Duration(c.config.TimeOut)*time.Millisecond, "")
 	go func() {
 		for {
-			util.Logger.Debug(c.config.Host + ":" + strconv.Itoa(c.config.Port))
-			err := http.ListenAndServe(c.config.Host+":"+strconv.Itoa(c.config.Port), s)
+			err := http.ListenAndServe(c.config.Host+":"+strconv.Itoa(c.config.Port), mux)
 			util.Logger.Warning("onebot v12 http server error: " + err.Error())
 			if err != nil {
 				time.Sleep(time.Second * 5)

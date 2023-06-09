@@ -6,10 +6,10 @@ import (
 
 // LogLevel 日志等级
 var (
-	LogLevelInfo    = (1 << 1) - 1
-	LogLevelWarning = (1 << 2) - 1
-	LogLevelError   = (1 << 3) - 1
-	LogLevelDebug   = (1 << 4) - 1
+	LogLevelInfo    = 1 << 0
+	LogLevelError   = LogLevelInfo | (1 << 1)
+	LogLevelWarning = LogLevelError | (1 << 2)
+	LogLevelDebug   = LogLevelWarning | (1 << 3)
 )
 
 // 各种颜色
@@ -83,7 +83,7 @@ func (l *Log) getLevelString(level int) string {
 
 // print 打印
 func (l *Log) print(level int, s string) {
-	if l.level&level != 0 {
+	if l.level >= level {
 		fmt.Println(fmt.Sprintf("%s[%s][%s]%s%s", l.getColor(level), GetFormatTime(), l.getLevelString(level), s, l.getColor(-1)))
 	}
 }

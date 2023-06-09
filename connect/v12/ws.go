@@ -105,6 +105,7 @@ func (c *OneBotV12ConnectWebsocket) receiveHandler(w http.ResponseWriter, r *htt
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	util.Logger.Debug("onebot v12 websocket server connect successful")
 	// 新建链接
 	newConn := websocketConnect{
 		sendChan: make(chan []byte, 65535),

@@ -86,10 +86,18 @@ func NewOneBotV12Connect(config OneBotV12Config) (*OneBotV12, error) {
 	switch config.ConnectType {
 	case ConnectTypeHttp:
 		// HTTP
+		if config.HttpConfig.TimeOut == 0 {
+			// 默认10000ms
+			config.HttpConfig.TimeOut = 10000
+		}
 		onebot.connect, err = NewOneBotV12ConnectHttp(&config.HttpConfig)
 	case ConnectTypeWebhook:
 		// Webhook
 		config.WebhookConfig.impl = onebot.impl
+		if config.WebhookConfig.UserAgent == "" {
+			// 默认go-libonebot
+			config.WebhookConfig.UserAgent = "github.com/FishZe/go-libonebot"
+		}
 		onebot.connect, err = NewOneBotV12ConnectWebhook(&config.WebhookConfig)
 	case ConnectTypeWebSocket:
 		// Websocket 作为websocket server
@@ -97,6 +105,15 @@ func NewOneBotV12Connect(config OneBotV12Config) (*OneBotV12, error) {
 		onebot.connect, err = NewOneBotV12ConnectWebsocket(&config.WebsocketConfig)
 	case ConnectTypeWebSocketReverse:
 		// WebsocketReverse 作为websocket client
+		if config.WebsocketReverseConfig.ReconnectInterval == 0 {
+			// 默认5000ms
+			config.WebsocketReverseConfig.ReconnectInterval = 5000
+		}
+		if config.WebsocketReverseConfig.UserAgent == "" {
+			// 默认go-libonebot
+			config.WebsocketReverseConfig.UserAgent = "github.com/FishZe/go-libonebot"
+		}
+		config.WebsocketReverseConfig.impl = onebot.impl
 		onebot.connect, err = NewOneBotV12ConnectWebsocketReverse(&config.WebsocketReverseConfig)
 	default:
 		err = ErrorNoConnection
@@ -107,6 +124,7 @@ func NewOneBotV12Connect(config OneBotV12Config) (*OneBotV12, error) {
 	}
 	// 绑定接收函数
 	onebot.connect.BindReceiveFunc(onebot.receiveMessage)
+	util.Logger.Debug("onebot v12 make connect success")
 	return &onebot, nil
 }
 
@@ -128,7 +146,12 @@ func (o *OneBotV12) AddBot(impl string, version string, oneBotVersion string, se
 		PlatForm: self.PlatForm,
 		UserId:   self.UserId,
 	})
-	o.impl = impl
+	if impl != "" {
+		o.impl = impl
+	} else {
+		o.impl = "github.com/FishZe/go-libonebot"
+	}
+	util.Logger.Debug("onebot v12 add bot success")
 	return nil
 }
 
@@ -137,6 +160,7 @@ func (o *OneBotV12) AddBotRequestChan(self protocol.Self, botRequestChan chan pr
 	if c, ok := o.botId.Load(self); ok {
 		// 存进去
 		o.botRequestChan.Store(c, botRequestChan)
+		util.Logger.Debug("onebot v12 add bot request chan success")
 		return nil
 	}
 	// 不存在Bot
