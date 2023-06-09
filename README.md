@@ -85,35 +85,34 @@ config := onebot.OneBotConfig{PlatForm: "QQ", Version: "1.0.0", Implementation: 
 bot := onebot.NewOneBot(c, "123456")
 // 创建v12连接
 conn, _ := v12.NewOneBotV12Connect(v12.OneBotV12Config{
-// 选择HTTP连接 
-ConnectType: v12.ConnectTypeHttp,
-HttpConfig: v12.OneBotV12HttpConfig{
-// Host 地址
-Host: "127.0.0.1",
-// Port 端口
-Port: 20003,
-},
-
+        // 选择HTTP连接 
+        ConnectType: v12.ConnectTypeHttp,
+        HttpConfig: v12.OneBotV12HttpConfig{
+        // Host 地址
+        Host: "127.0.0.1",
+        // Port 端口
+        Port: 20003,
+    },
 })
 // 把这个连接添加到Bot中
 _ = bot.AddConnection(conn)
 // 添加一个事件处理器 : 发送消息请求
 b.AddRequestInterface(protocol.HandleActionSendMessage(func(e *protocol.RequestSendMessage) *protocol.ResponseSendMessage {
-log.Println("收到框架事件请求 发送消息: ", e.Message)
-// 事件回复 状态码为0正常
-msg := protocol.NewResponseSendMessage(0)
-// 补充动作响应 填写MessageID
-msg.MessageId = util.GetUUID()
-return msg
+    log.Println("收到框架事件请求 发送消息: ", e.Message)
+    // 事件回复 状态码为0正常
+    msg := protocol.NewResponseSendMessage(0)
+    // 补充动作响应 填写MessageID
+    msg.MessageId = util.GetUUID()
+    return msg
 }))
 {
-// 上报收到私聊消息事件
-evt := protocol.NewMessageEventPrivate()
-// 加入消息段
-evt.Message = append(evt.Message, protocol.GetSegmentText("你好啊"))
-// 设置用户id
-evt.UserId = "123456"
-_ = bot.SendEvent(evt)
+    // 上报收到私聊消息事件
+    evt := protocol.NewMessageEventPrivate()
+    // 加入消息段
+    evt.Message = append(evt.Message, protocol.GetSegmentText("你好啊"))
+    // 设置用户id
+    evt.UserId = "123456"
+    _ = bot.SendEvent(evt)
 }
 ```
 
