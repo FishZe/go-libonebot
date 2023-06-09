@@ -13,6 +13,18 @@ func (b *Bot) startRequestChan() {
 			select {
 			case request := <-b.requestChan:
 				go func() {
+					send := false
+					defer func() {
+						// recover 错误
+						if err := recover(); err != nil {
+							util.Logger.Error("handle action error: " + err.(error).Error())
+						}
+						// 没发送, 重新发送
+						if !send {
+							res := protocol.NewEmptyResponse(protocol.ResponseCodeBadHandler)
+							_ = b.sendResponse(res, request.Request)
+						}
+					}()
 					var res any
 					// Action为空, 返回错误: 无效的动作请求参数 参数缺失或参数类型错误
 					if request.Request.Action == "" {
@@ -49,8 +61,9 @@ func (b *Bot) startRequestChan() {
 					// 发送响应
 					err := b.sendResponse(res, request.Request)
 					if err != nil {
-						util.Logger.Error("send response failed: " + err.Error())
+						util.Logger.Warning("send response failed: " + err.Error())
 					}
+					send = true
 				}()
 			}
 		}

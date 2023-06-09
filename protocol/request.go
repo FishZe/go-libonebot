@@ -28,6 +28,9 @@ func (*RequestGetLatestEvents) New() any {
 //
 // 执行用户自定义函数
 func (r *RequestGetLatestEvents) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	resp := r.f(r)
 	newEvents := make([]any, 0)
 	for _, v := range resp.Events {
@@ -61,6 +64,9 @@ func (*RequestGetSupportedActions) New() any {
 //
 // 执行用户自定义函数
 func (r *RequestGetSupportedActions) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -86,6 +92,9 @@ func (*RequestGetStatus) New() any {
 //
 // 执行用户自定义函数
 func (r *RequestGetStatus) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -111,6 +120,9 @@ func (*RequestGetVersion) New() any {
 //
 // 执行用户自定义函数
 func (r *RequestGetVersion) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -154,6 +166,9 @@ func (*RequestSendMessage) New() any {
 //
 // 执行用户自定义函数
 func (r *RequestSendMessage) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -181,6 +196,9 @@ func (*RequestDeleteMessage) New() any {
 //
 // 执行用户自定义函数
 func (r *RequestDeleteMessage) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -195,6 +213,9 @@ type RequestGetSelfInfo struct {
 
 // Do 执行
 func (r *RequestGetSelfInfo) Do() (e any) {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -219,8 +240,11 @@ type RequestGetUserInfo struct {
 }
 
 // Do 执行
-func (*RequestGetUserInfo) Do() (e any) {
-	return
+func (r *RequestGetUserInfo) Do() (e any) {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
+	return r.f(r)
 }
 
 // New 构造函数
@@ -254,6 +278,9 @@ func (*RequestGetFriendList) New() any {
 
 // Do  执行
 func (r *RequestGetFriendList) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -279,6 +306,9 @@ func (*RequestGetGroupInfo) New() any {
 
 // Do 执行
 func (r *RequestGetGroupInfo) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -302,6 +332,9 @@ func (*RequestGetGroupList) New() any {
 
 // Do 执行
 func (r *RequestGetGroupList) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -329,6 +362,9 @@ func (*RequestGetGroupMemberInfo) New() any {
 
 // Do 执行
 func (r *RequestGetGroupMemberInfo) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -354,6 +390,9 @@ func (*RequestGetGroupMemberList) New() any {
 
 // Do 执行
 func (r *RequestGetGroupMemberList) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -381,6 +420,9 @@ func (*RequestSetGroupName) New() any {
 
 // Do 执行
 func (r *RequestSetGroupName) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -406,6 +448,9 @@ func (*RequestLeaveGroup) New() any {
 
 // Do 执行
 func (r *RequestLeaveGroup) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -431,6 +476,9 @@ func (r *RequestGetGuildInfo) New() any {
 
 // Do 执行
 func (r *RequestGetGuildInfo) Do() (e any) {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -454,6 +502,9 @@ func (*RequestGetGuildList) New() any {
 
 // Do 执行
 func (r *RequestGetGuildList) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -481,6 +532,9 @@ func (*RequestSetGuildName) New() any {
 
 // Do 执行
 func (r *RequestSetGuildName) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -508,6 +562,9 @@ func (*RequestGetGuildMemberInfo) New() any {
 
 // Do 执行
 func (r *RequestGetGuildMemberInfo) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -533,6 +590,9 @@ func (*RequestGetGuildMemberList) New() any {
 
 // Do 执行
 func (r *RequestGetGuildMemberList) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -558,6 +618,9 @@ func (*RequestLeaveGuild) New() any {
 
 // Do 执行
 func (r *RequestLeaveGuild) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -585,6 +648,9 @@ func (*RequestGetChannelInfo) New() any {
 
 // Do 执行
 func (r *RequestGetChannelInfo) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -613,6 +679,9 @@ func (*RequestGetChannelList) New() any {
 
 // Do 执行
 func (r *RequestGetChannelList) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -642,6 +711,9 @@ func (*RequestSetChannelName) New() any {
 
 // Do 执行
 func (r *RequestSetChannelName) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -671,6 +743,9 @@ func (*RequestGetChannelMemberInfo) New() any {
 
 // Do 执行
 func (r *RequestGetChannelMemberInfo) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -698,6 +773,9 @@ func (*RequestGetChannelMemberList) New() any {
 
 // Do 执行
 func (r *RequestGetChannelMemberList) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -725,6 +803,9 @@ func (*RequestLeaveChannel) New() any {
 
 // Do 执行
 func (r *RequestLeaveChannel) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -763,6 +844,9 @@ func (*RequestUploadFile) New() any {
 
 // Do 执行
 func (r *RequestUploadFile) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -800,6 +884,9 @@ func (*RequestUploadFileFragmented) New() any {
 
 // Do 执行
 func (r *RequestUploadFileFragmented) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -827,6 +914,9 @@ func (*RequestGetFile) New() any {
 
 // Do 执行
 func (r *RequestGetFile) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }
 
@@ -858,5 +948,8 @@ func (*RequestGetFileFragmented) New() any {
 
 // Do 执行
 func (r *RequestGetFileFragmented) Do() any {
+	if r.f == nil {
+		return NewEmptyResponse(ResponseCodeBadHandler)
+	}
 	return r.f(r)
 }

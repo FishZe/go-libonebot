@@ -49,6 +49,9 @@ type RawRequestType struct {
 
 // RawRequestTypeToRequest 将RawRequestType转换为Request
 func RawRequestTypeToRequest(e any, r RawRequestType) error {
+	if reflect.TypeOf(e).Kind() != reflect.Ptr || reflect.TypeOf(e).Elem().Kind() != reflect.Struct {
+		return ErrorInvalidRequest
+	}
 	t := reflect.TypeOf(e).Elem()
 	v := reflect.ValueOf(e).Elem()
 	// 类型不对

@@ -18,6 +18,9 @@ package protocol
 
 // HandleActionGetLatestEvents 处理GetLatestEvents请求
 func HandleActionGetLatestEvents(f func(events *RequestGetLatestEvents) *ResponseGetLatestEvents) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetLatestEvents{}
 	r := a.New()
 	r.(*RequestGetLatestEvents).f = f
@@ -26,6 +29,9 @@ func HandleActionGetLatestEvents(f func(events *RequestGetLatestEvents) *Respons
 
 // HandleActionGetSupportedActions 处理GetSupportedActions请求
 func HandleActionGetSupportedActions(f func(events *RequestGetSupportedActions) *ResponseGetSupportedActions) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetSupportedActions{}
 	r := a.New()
 	r.(*RequestGetSupportedActions).f = f
@@ -34,6 +40,9 @@ func HandleActionGetSupportedActions(f func(events *RequestGetSupportedActions) 
 
 // HandleActionGetStatus 处理GetStatus请求
 func HandleActionGetStatus(f func(events *RequestGetStatus) *ResponseGetStatus) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetStatus{}
 	r := a.New()
 	r.(*RequestGetStatus).f = f
@@ -42,6 +51,9 @@ func HandleActionGetStatus(f func(events *RequestGetStatus) *ResponseGetStatus) 
 
 // HandleActionGetVersion 处理GetVersion请求
 func HandleActionGetVersion(f func(events *RequestGetVersion) *ResponseGetVersion) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetVersion{}
 	r := a.New()
 	r.(*RequestGetVersion).f = f
@@ -50,6 +62,9 @@ func HandleActionGetVersion(f func(events *RequestGetVersion) *ResponseGetVersio
 
 // HandleActionSendMessage 处理SendMessage请求
 func HandleActionSendMessage(f func(events *RequestSendMessage) *ResponseSendMessage) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestSendMessage{}
 	r := a.New()
 	r.(*RequestSendMessage).f = f
@@ -58,6 +73,9 @@ func HandleActionSendMessage(f func(events *RequestSendMessage) *ResponseSendMes
 
 // HandleActionDeleteMessage 处理DeleteMessage请求
 func HandleActionDeleteMessage(f func(events *RequestDeleteMessage) *ResponseDeleteMessage) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestDeleteMessage{}
 	r := a.New()
 	r.(*RequestDeleteMessage).f = f
@@ -66,6 +84,9 @@ func HandleActionDeleteMessage(f func(events *RequestDeleteMessage) *ResponseDel
 
 // HandleActionGetSelfInfo 处理GetSelfInfo请求
 func HandleActionGetSelfInfo(f func(events *RequestGetSelfInfo) *ResponseGetSelfInfo) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetSelfInfo{}
 	r := a.New()
 	r.(*RequestGetSelfInfo).f = f
@@ -74,6 +95,9 @@ func HandleActionGetSelfInfo(f func(events *RequestGetSelfInfo) *ResponseGetSelf
 
 // HandleActionGetUserInfo 处理GetUserInfo请求
 func HandleActionGetUserInfo(f func(events *RequestGetUserInfo) *ResponseGetUserInfo) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetUserInfo{}
 	r := a.New()
 	r.(*RequestGetUserInfo).f = f
@@ -82,6 +106,9 @@ func HandleActionGetUserInfo(f func(events *RequestGetUserInfo) *ResponseGetUser
 
 // HandleActionGetFriendList 处理GetFriendList请求
 func HandleActionGetFriendList(f func(events *RequestGetFriendList) *ResponseGetFriendList) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetFriendList{}
 	r := a.New()
 	r.(*RequestGetFriendList).f = f
@@ -90,6 +117,9 @@ func HandleActionGetFriendList(f func(events *RequestGetFriendList) *ResponseGet
 
 // HandleActionGetGroupInfo 处理GetGroupInfo请求
 func HandleActionGetGroupInfo(f func(events *RequestGetGroupInfo) *ResponseGetGroupInfo) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetGroupInfo{}
 	r := a.New()
 	r.(*RequestGetGroupInfo).f = f
@@ -98,6 +128,9 @@ func HandleActionGetGroupInfo(f func(events *RequestGetGroupInfo) *ResponseGetGr
 
 // HandleActionGetGroupList 处理GetGroupList请求
 func HandleActionGetGroupList(f func(events *RequestGetGroupList) *ResponseGetGroupList) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetGroupList{}
 	r := a.New()
 	r.(*RequestGetGroupList).f = f
@@ -106,6 +139,9 @@ func HandleActionGetGroupList(f func(events *RequestGetGroupList) *ResponseGetGr
 
 // HandleActionGetGroupMemberInfo 处理GetGroupMemberInfo请求
 func HandleActionGetGroupMemberInfo(f func(events *RequestGetGroupMemberInfo) *ResponseGetGroupMemberInfo) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetGroupMemberInfo{}
 	r := a.New()
 	r.(*RequestGetGroupMemberInfo).f = f
@@ -114,6 +150,9 @@ func HandleActionGetGroupMemberInfo(f func(events *RequestGetGroupMemberInfo) *R
 
 // HandleActionGetGroupMemberList 处理GetGroupMemberList请求
 func HandleActionGetGroupMemberList(f func(events *RequestGetGroupMemberList) *ResponseGetGroupMemberList) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetGroupMemberList{}
 	r := a.New()
 	r.(*RequestGetGroupMemberList).f = f
@@ -122,6 +161,9 @@ func HandleActionGetGroupMemberList(f func(events *RequestGetGroupMemberList) *R
 
 // HandleActionSetGroupName 处理SetGroupName请求
 func HandleActionSetGroupName(f func(events *RequestSetGroupName) *ResponseSetGroupName) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestSetGroupName{}
 	r := a.New()
 	r.(*RequestSetGroupName).f = f
@@ -130,6 +172,9 @@ func HandleActionSetGroupName(f func(events *RequestSetGroupName) *ResponseSetGr
 
 // HandleActionLeaveGroup 处理LeaveGroup请求
 func HandleActionLeaveGroup(f func(events *RequestLeaveGroup) *ResponseLeaveGroup) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestLeaveGroup{}
 	r := a.New()
 	r.(*RequestLeaveGroup).f = f
@@ -138,6 +183,9 @@ func HandleActionLeaveGroup(f func(events *RequestLeaveGroup) *ResponseLeaveGrou
 
 // HandleActionGetGuildInfo 处理GetGuildInfo请求
 func HandleActionGetGuildInfo(f func(events *RequestGetGuildInfo) *ResponseGetGuildInfo) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetGuildInfo{}
 	r := a.New()
 	r.(*RequestGetGuildInfo).f = f
@@ -146,6 +194,9 @@ func HandleActionGetGuildInfo(f func(events *RequestGetGuildInfo) *ResponseGetGu
 
 // HandleActionGetGuildList 处理GetGuildList请求
 func HandleActionGetGuildList(f func(events *RequestGetGuildList) *ResponseGetGuildList) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetGuildList{}
 	r := a.New()
 	r.(*RequestGetGuildList).f = f
@@ -154,6 +205,9 @@ func HandleActionGetGuildList(f func(events *RequestGetGuildList) *ResponseGetGu
 
 // HandleActionSetGuildName 处理SetGuildName请求
 func HandleActionSetGuildName(f func(events *RequestSetGuildName) *ResponseSetGuildName) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestSetGuildName{}
 	r := a.New()
 	r.(*RequestSetGuildName).f = f
@@ -162,6 +216,9 @@ func HandleActionSetGuildName(f func(events *RequestSetGuildName) *ResponseSetGu
 
 // HandleActionGetGuildMemberInfo 处理GetGuildMemberInfo请求
 func HandleActionGetGuildMemberInfo(f func(events *RequestGetGuildMemberInfo) *ResponseGetGuildMemberInfo) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetGuildMemberInfo{}
 	r := a.New()
 	r.(*RequestGetGuildMemberInfo).f = f
@@ -170,6 +227,9 @@ func HandleActionGetGuildMemberInfo(f func(events *RequestGetGuildMemberInfo) *R
 
 // HandleActionGetGuildMemberList 处理GetGuildMemberList请求
 func HandleActionGetGuildMemberList(f func(events *RequestGetGuildMemberList) *ResponseGetGuildMemberList) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetGuildMemberList{}
 	r := a.New()
 	r.(*RequestGetGuildMemberList).f = f
@@ -178,6 +238,9 @@ func HandleActionGetGuildMemberList(f func(events *RequestGetGuildMemberList) *R
 
 // HandleActionLeaveGuild 处理LeaveGuild请求
 func HandleActionLeaveGuild(f func(events *RequestLeaveGuild) *ResponseLeaveGuild) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestLeaveGuild{}
 	r := a.New()
 	r.(*RequestLeaveGuild).f = f
@@ -186,6 +249,9 @@ func HandleActionLeaveGuild(f func(events *RequestLeaveGuild) *ResponseLeaveGuil
 
 // HandleActionGetChannelInfo 处理GetChannelInfo请求
 func HandleActionGetChannelInfo(f func(events *RequestGetChannelInfo) *ResponseGetChannelInfo) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetChannelInfo{}
 	r := a.New()
 	r.(*RequestGetChannelInfo).f = f
@@ -194,6 +260,9 @@ func HandleActionGetChannelInfo(f func(events *RequestGetChannelInfo) *ResponseG
 
 // HandleActionGetChannelList 处理GetChannelList请求
 func HandleActionGetChannelList(f func(events *RequestGetChannelList) *ResponseGetChannelList) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetChannelList{}
 	r := a.New()
 	r.(*RequestGetChannelList).f = f
@@ -202,6 +271,9 @@ func HandleActionGetChannelList(f func(events *RequestGetChannelList) *ResponseG
 
 // HandleActionSetChannelName 处理SetChannelName请求
 func HandleActionSetChannelName(f func(events *RequestSetChannelName) *ResponseSetChannelName) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestSetChannelName{}
 	r := a.New()
 	r.(*RequestSetChannelName).f = f
@@ -210,6 +282,9 @@ func HandleActionSetChannelName(f func(events *RequestSetChannelName) *ResponseS
 
 // HandleActionGetChannelMemberInfo 处理GetChannelMemberInfo请求
 func HandleActionGetChannelMemberInfo(f func(events *RequestGetChannelMemberInfo) *ResponseGetChannelMemberInfo) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetChannelMemberInfo{}
 	r := a.New()
 	r.(*RequestGetChannelMemberInfo).f = f
@@ -218,6 +293,9 @@ func HandleActionGetChannelMemberInfo(f func(events *RequestGetChannelMemberInfo
 
 // HandleActionGetChannelMemberList 处理GetChannelMemberList请求
 func HandleActionGetChannelMemberList(f func(events *RequestGetChannelMemberList) *ResponseGetChannelMemberList) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetChannelMemberList{}
 	r := a.New()
 	r.(*RequestGetChannelMemberList).f = f
@@ -226,6 +304,9 @@ func HandleActionGetChannelMemberList(f func(events *RequestGetChannelMemberList
 
 // HandleActionLeaveChannel 处理LeaveChannel请求
 func HandleActionLeaveChannel(f func(events *RequestLeaveChannel) *ResponseLeaveChannel) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestLeaveChannel{}
 	r := a.New()
 	r.(*RequestLeaveChannel).f = f
@@ -234,6 +315,9 @@ func HandleActionLeaveChannel(f func(events *RequestLeaveChannel) *ResponseLeave
 
 // HandleActionUploadFile 处理UploadFile请求
 func HandleActionUploadFile(f func(events *RequestUploadFile) *ResponseUploadFile) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestUploadFile{}
 	r := a.New()
 	r.(*RequestUploadFile).f = f
@@ -242,6 +326,9 @@ func HandleActionUploadFile(f func(events *RequestUploadFile) *ResponseUploadFil
 
 // HandleActionUploadFileFragmented 处理UploadFileFragmented请求
 func HandleActionUploadFileFragmented(f func(events *RequestUploadFileFragmented) *ResponseUploadFileFragmented) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestUploadFileFragmented{}
 	r := a.New()
 	r.(*RequestUploadFileFragmented).f = f
@@ -250,6 +337,9 @@ func HandleActionUploadFileFragmented(f func(events *RequestUploadFileFragmented
 
 // HandleActionGetFile 处理GetFile请求
 func HandleActionGetFile(f func(events *RequestGetFile) *ResponseGetFile) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetFile{}
 	r := a.New()
 	r.(*RequestGetFile).f = f
@@ -258,6 +348,9 @@ func HandleActionGetFile(f func(events *RequestGetFile) *ResponseGetFile) (strin
 
 // HandleActionGetFileFragmented 处理GetFileFragmented请求
 func HandleActionGetFileFragmented(f func(events *RequestGetFileFragmented) *ResponseGetFileFragmented) (string, RequestInterface) {
+	if f == nil {
+		return "", nil
+	}
 	a := RequestGetFileFragmented{}
 	r := a.New()
 	r.(*RequestGetFileFragmented).f = f

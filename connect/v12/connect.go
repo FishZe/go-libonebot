@@ -9,13 +9,13 @@ import (
 
 const (
 	// ConnectTypeHttp http连接
-	ConnectTypeHttp = 1 << 0
+	ConnectTypeHttp = 1
 	// ConnectTypeWebhook webhook 连接
-	ConnectTypeWebhook = 1 << 1
+	ConnectTypeWebhook = 2
 	// ConnectTypeWebSocket websocket连接
-	ConnectTypeWebSocket = 1 << 2
+	ConnectTypeWebSocket = 3
 	// ConnectTypeWebSocketReverse 反向websocket连接
-	ConnectTypeWebSocketReverse = 1 << 3
+	ConnectTypeWebSocketReverse = 4
 )
 
 const (
@@ -30,8 +30,6 @@ var (
 	ErrorBotExist = errors.New("bot already exists")
 	// ErrorBotNotExist bot不存在
 	ErrorBotNotExist = errors.New("bot does not exist")
-	// ErrorTooMuchConnection 连接过多
-	ErrorTooMuchConnection = errors.New("too much connection")
 	// ErrorNoConnection 没有连接
 	ErrorNoConnection = errors.New("no connection")
 )
@@ -76,18 +74,8 @@ type OneBotV12Config struct {
 
 // NewOneBotV12Connect 创建连接
 func NewOneBotV12Connect(config OneBotV12Config) (*OneBotV12, error) {
-	// 判断连接数量
-	var count = 0
-	var connectType = config.ConnectType
-	for connectType != 0 {
-		connectType = connectType & (connectType - 1)
-		count++
-	}
-	// 数量不为1
-	if count == 0 {
+	if config.ConnectType < ConnectTypeHttp || config.ConnectType > ConnectTypeWebSocketReverse {
 		return nil, ErrorNoConnection
-	} else if count > 1 {
-		return nil, ErrorTooMuchConnection
 	}
 	// 创建连接
 	onebot := OneBotV12{
@@ -114,6 +102,7 @@ func NewOneBotV12Connect(config OneBotV12Config) (*OneBotV12, error) {
 		err = ErrorNoConnection
 	}
 	if err != nil {
+		util.Logger.Warning("onebot v12 make connect error: " + err.Error())
 		return nil, err
 	}
 	// 绑定接收函数
@@ -125,6 +114,7 @@ func NewOneBotV12Connect(config OneBotV12Config) (*OneBotV12, error) {
 func (o *OneBotV12) AddBot(impl string, version string, oneBotVersion string, self protocol.Self) error {
 	// 版本不匹配
 	if oneBotVersion != o.GetVersion() {
+		util.Logger.Warning("onebot v12 add bot error: " + ErrorConnectionNotV12.Error())
 		return ErrorConnectionNotV12
 	}
 	// 查找self是否存在

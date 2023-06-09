@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/FishZe/go-libonebot/util"
 	"io"
 	"net/http"
 	"strconv"
@@ -75,16 +76,20 @@ func (c *OneBotV12ConnectWebhook) Send(b []byte, t int, e string) error {
 		}
 		resp, err := client.Do(req)
 		if err != nil {
+			util.Logger.Warning("onebot v12 webhook send error: " + err.Error())
 			return err
 		}
 		defer func(Body io.ReadCloser) {
-			_ = Body.Close()
+			if err = Body.Close(); err != nil {
+				util.Logger.Warning("onebot v12 webhook close body error: " + err.Error())
+			}
 		}(resp.Body)
 		if resp.StatusCode != 200 && resp.StatusCode != 204 {
 			return errors.New("onebot v12 webhook status code error: " + strconv.Itoa(resp.StatusCode) + " " + resp.Status)
 		}
 		s, err := io.ReadAll(resp.Body)
 		if err != nil {
+			util.Logger.Warning("onebot v12 webhook read body error: " + err.Error())
 			return err
 		}
 		return c.returnRequest(s)

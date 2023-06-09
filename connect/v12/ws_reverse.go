@@ -61,7 +61,7 @@ func (c *OneBotV12ConnectWebsocketReverse) startWebsocketClient() {
 					case msg := <-c.sendChan:
 						err = c.conn.WriteMessage(websocket.TextMessage, msg)
 						if err != nil {
-							util.Logger.Error("websocket send error: " + err.Error())
+							util.Logger.Warning("websocket send error: " + err.Error())
 						}
 					case <-c.done:
 						return
@@ -77,7 +77,7 @@ func (c *OneBotV12ConnectWebsocketReverse) startWebsocketClient() {
 				if c.receiveFunc != nil {
 					_, err := c.receiveFunc(message)
 					if err != nil {
-						util.Logger.Error("websocket receive error: " + err.Error())
+						util.Logger.Warning("websocket receive error: " + err.Error())
 					}
 				}
 			}

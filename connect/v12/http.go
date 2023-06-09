@@ -58,7 +58,9 @@ func NewOneBotV12ConnectHttp(config *OneBotV12HttpConfig) (*OneBotV12ConnectHttp
 
 func (c *OneBotV12ConnectHttp) receiveHandler(w http.ResponseWriter, r *http.Request) {
 	defer func() {
-		// TODO: check
+		if err := r.Body.Close(); err != nil {
+			util.Logger.Warning("onebot v12 http server close body error: " + err.Error())
+		}
 	}()
 	util.Logger.Debug("onebot v12 http server receive request: " + r.Method + " " + r.Header.Get("Content-Type"))
 	// 如果收到非 POST 请求，可以返回 HTTP 状态码 405 Method Not Allowed
@@ -105,6 +107,7 @@ func (c *OneBotV12ConnectHttp) receiveHandler(w http.ResponseWriter, r *http.Req
 		util.Logger.Debug("onebot v12 http server authorized successful")
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
+			util.Logger.Warning("onebot v12 http server read body error: " + err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -127,6 +130,7 @@ func (c *OneBotV12ConnectHttp) receiveHandler(w http.ResponseWriter, r *http.Req
 				if err != nil {
 					util.Logger.Error("onebot v12 http server respond error: " + err.Error())
 				}
+				// 关闭channel, 删除映射关系
 				close(ch)
 				c.requestCallBack.Delete(rId)
 				return
@@ -155,7 +159,7 @@ func (c *OneBotV12ConnectHttp) Start() error {
 		for {
 			util.Logger.Debug(c.config.Host + ":" + strconv.Itoa(c.config.Port))
 			err := http.ListenAndServe(c.config.Host+":"+strconv.Itoa(c.config.Port), s)
-			util.Logger.Error("onebot v12 http server error: " + err.Error())
+			util.Logger.Warning("onebot v12 http server error: " + err.Error())
 			if err != nil {
 				time.Sleep(time.Second * 5)
 			}

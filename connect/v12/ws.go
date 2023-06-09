@@ -144,7 +144,7 @@ func (c *OneBotV12ConnectWebsocket) receiveHandler(w http.ResponseWriter, r *htt
 				util.Logger.Debug("onebot v12 websocket server send: " + string(msg))
 				err = conn.WriteMessage(websocket.TextMessage, msg)
 				if err != nil {
-					util.Logger.Error("onebot v12 websocket server send failed: " + err.Error())
+					util.Logger.Warning("onebot v12 websocket server send failed: " + err.Error())
 				}
 			}
 
@@ -179,7 +179,7 @@ func (c *OneBotV12ConnectWebsocket) Start() error {
 		for {
 			util.Logger.Debug(c.config.Host + ":" + strconv.Itoa(c.config.Port))
 			err := http.ListenAndServe(c.config.Host+":"+strconv.Itoa(c.config.Port), s)
-			util.Logger.Error("onebot v12 websocket server error: " + err.Error())
+			util.Logger.Warning("onebot v12 websocket server error: " + err.Error())
 			if err != nil {
 				time.Sleep(time.Second * 5)
 			}

@@ -19,7 +19,7 @@ func (b *Bot) sendResponse(e any, request *protocol.Request) error {
 	err := protocol.ResponseCheck(request, e)
 	if err != nil {
 		// 不是合法的响应 返回一个20001 bad handler 错误
-		util.Logger.Error("response check error: " + err.Error())
+		util.Logger.Warning("response check error: " + err.Error())
 		_ = b.sendResponse(protocol.NewEmptyResponse(protocol.ResponseCodeBadHandler), request)
 		return err
 	}
