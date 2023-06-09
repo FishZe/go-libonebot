@@ -18,6 +18,8 @@ type OneBotV12WebsocketConfig struct {
 	Port int
 	// AccessToken WebSocket 服务器监听端口
 	AccessToken string
+	// TimeOut 超时时间
+	TimeOut int
 }
 
 // OneBotV12ConnectWebsocket websocket链接
@@ -32,6 +34,7 @@ type OneBotV12ConnectWebsocket struct {
 type websocketConnect struct {
 	sendChan chan []byte
 	done     chan struct{}
+	tickers  sync.Map
 }
 
 // Send 发送消息
@@ -41,12 +44,24 @@ func (c *OneBotV12ConnectWebsocket) Send(b []byte, t int, e string) error {
 		if r, ok := c.waitResp.Load(e); ok {
 			// connectionID -> connection
 			if con, ok := c.connections.Load(r); ok {
-				con.(websocketConnect).sendChan <- b
+				nowConn := con.(*websocketConnect)
+				// requestID -> *util.Ticker
+				if t, ok := nowConn.tickers.Load(e); ok {
+					// 查找是否存在计时器
+					nowConn.sendChan <- b
+					tic := t.(*util.Ticker)
+					tic.Stop()
+					util.Logger.Debug("onebot v12 websocket send :" + e + " use " + tic.GetDurationString())
+					nowConn.tickers.Delete(e)
+				} else {
+					// 动作超时
+					util.Logger.Warning("onebot v12 websocket send :" + e + " timeout")
+				}
 			}
 		}
 	} else {
 		c.connections.Range(func(key, value interface{}) bool {
-			value.(websocketConnect).sendChan <- b
+			value.(*websocketConnect).sendChan <- b
 			return true
 		})
 	}
@@ -113,7 +128,7 @@ func (c *OneBotV12ConnectWebsocket) receiveHandler(w http.ResponseWriter, r *htt
 	}
 	nowWaitID := make([]string, 0)
 	nowID := util.GetUUID()
-	c.connections.Store(nowID, newConn)
+	c.connections.Store(nowID, &newConn)
 	util.Logger.Debug("onebot v12 websocket server new connection: " + nowID)
 	defer func() {
 		// 关闭连接
@@ -126,6 +141,9 @@ func (c *OneBotV12ConnectWebsocket) receiveHandler(w http.ResponseWriter, r *htt
 		c.connections.Delete(nowID)
 		for _, v := range nowWaitID {
 			c.waitResp.Delete(v)
+			if _, ok := newConn.tickers.Load(v); ok {
+				newConn.tickers.Delete(v)
+			}
 		}
 		// 清空列表 gc
 		nowWaitID = nil
@@ -142,7 +160,7 @@ func (c *OneBotV12ConnectWebsocket) receiveHandler(w http.ResponseWriter, r *htt
 				return
 			case msg := <-newConn.sendChan:
 				// 发送消息
-				util.Logger.Debug("onebot v12 websocket server send: " + string(msg))
+				util.Logger.Debug("onebot v12 websocket server send msg")
 				err = conn.WriteMessage(websocket.TextMessage, msg)
 				if err != nil {
 					util.Logger.Warning("onebot v12 websocket server send failed: " + err.Error())
@@ -163,10 +181,31 @@ func (c *OneBotV12ConnectWebsocket) receiveHandler(w http.ResponseWriter, r *htt
 		if err != nil {
 			util.Logger.Error("onebot v12 websocket server receive failed: " + err.Error())
 		}
+		util.Logger.Debug("onebot v12 websocket server wait response: " + id)
 		// 存储requestID -> connectionID
 		c.waitResp.Store(id, nowID)
 		// 加入列表
 		nowWaitID = append(nowWaitID, id)
+		// 储存计时器
+		newConn.tickers.Store(id, util.NewTicker())
+		go func() {
+			time.Sleep(time.Millisecond * time.Duration(c.config.TimeOut))
+			if _, ok := newConn.tickers.Load(id); ok {
+				// 超时
+				util.Logger.Warning("onebot v12 websocket server timeout: " + id)
+				// 删除计时器
+				newConn.tickers.Delete(id)
+				// 删除列表
+				for i, v := range nowWaitID {
+					if v == id {
+						nowWaitID = append(nowWaitID[:i], nowWaitID[i+1:]...)
+						break
+					}
+				}
+				// 删除存储
+				c.waitResp.Delete(id)
+			}
+		}()
 	}
 }
 

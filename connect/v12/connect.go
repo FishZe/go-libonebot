@@ -119,16 +119,26 @@ func NewOneBotV12Connect(config OneBotV12Config) (*OneBotV12, error) {
 	case ConnectTypeWebSocket:
 		// Websocket 作为websocket server
 		config.WebsocketReverseConfig.impl = onebot.impl
+		if config.WebsocketConfig.TimeOut <= 0 {
+			config.WebsocketConfig.TimeOut = 10000
+		}
 		onebot.connect, err = NewOneBotV12ConnectWebsocket(&config.WebsocketConfig)
 	case ConnectTypeWebSocketReverse:
 		// WebsocketReverse 作为websocket client
-		if config.WebsocketReverseConfig.ReconnectInterval == 0 {
+		if config.WebsocketReverseConfig.ReconnectInterval <= 0 {
 			// 默认5000ms
 			config.WebsocketReverseConfig.ReconnectInterval = 5000
 		}
 		if config.WebsocketReverseConfig.UserAgent == "" {
 			// 默认go-libonebot
 			config.WebsocketReverseConfig.UserAgent = "github.com/FishZe/go-libonebot"
+		}
+		if config.WebsocketReverseConfig.TimeOut <= 0 {
+			// 默认10000ms
+			config.WebsocketReverseConfig.TimeOut = 10000
+		}
+		if config.WebsocketReverseConfig.BufferSize <= 0 {
+			config.WebsocketReverseConfig.BufferSize = 65535
 		}
 		config.WebsocketReverseConfig.impl = onebot.impl
 		onebot.connect, err = NewOneBotV12ConnectWebsocketReverse(&config.WebsocketReverseConfig)
@@ -142,7 +152,7 @@ func NewOneBotV12Connect(config OneBotV12Config) (*OneBotV12, error) {
 	// 绑定接收函数
 	onebot.connect.BindReceiveFunc(onebot.receiveMessage)
 	util.Logger.Debug("onebot v12 make connect success")
-	onebot.SendConnectEvent()
+	//onebot.SendConnectEvent()
 	return &onebot, nil
 }
 
@@ -171,7 +181,7 @@ func (o *OneBotV12) AddBot(impl string, version string, oneBotVersion string, se
 		o.impl = "github.com/FishZe/go-libonebot"
 	}
 	util.Logger.Debug("onebot v12 add bot success")
-	o.SendStatusUpdate()
+	//o.SendStatusUpdate()
 	return nil
 }
 
@@ -205,9 +215,7 @@ func (o *OneBotV12) SendConnectEvent() {
 	if eType, eid, err := protocol.EventCheck(protocol.Self{}, e); err != nil {
 		util.Logger.Warning("onebot v12 check connect event error: " + err.Error())
 	} else if err = o.ConnectSendEvent(e, eid, eType); err != nil {
-
 		util.Logger.Warning("onebot v12 send connect event error: " + err.Error())
-
 	}
 }
 

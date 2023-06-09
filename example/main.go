@@ -60,11 +60,40 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	conn2, err := v12.NewOneBotV12Connect(v12.OneBotV12Config{
+		ConnectType: v12.ConnectTypeWebSocketReverse,
+		WebsocketReverseConfig: v12.OneBotV12WebsocketReverseConfig{
+			Url:               "ws://192.168.81.137:20001",
+			ReconnectInterval: 5000,
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+	err = bot.AddConnection(conn2)
+	if err != nil {
+		panic(err)
+	}
+	conn3, err := v12.NewOneBotV12Connect(v12.OneBotV12Config{
+		ConnectType: v12.ConnectTypeWebSocket,
+		WebsocketConfig: v12.OneBotV12WebsocketConfig{
+			Host: "127.0.0.1",
+			Port: 20004,
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+	err = bot.AddConnection(conn3)
+	if err != nil {
+		panic(err)
+	}
 	// 创建一个事件处理器
 	mux := onebot.NewActionMux()
 	mux.AddRequestInterface(protocol.HandleActionSendMessage(func(e *protocol.RequestSendMessage) *protocol.ResponseSendMessage {
 		// 处理发送消息动作
 		log.Println("SendMessage: ", e.Message)
+		util.Logger.Info("SendMessage: " + e.Message[0].Data["text"].(string))
 		msg := protocol.NewResponseSendMessage(0)
 		msg.MessageId = util.GetUUID()
 		return msg
@@ -82,7 +111,7 @@ func main() {
 		e := protocol.NewMessageEventPrivate()
 		// 消息为 "今天吃什么"
 		e.Message = append(e.Message, protocol.GetSegmentText("今天吃什么"))
-		e.UserId = "123456"
+		e.UserId = "1234567"
 		err = bot.SendEvent(e)
 		if err != nil {
 			log.Println(err)

@@ -112,3 +112,10 @@ func (l *Log) Debug(s string) {
 func (l *Log) Println(s string) {
 	l.print(0, s)
 }
+
+func init() {
+	// 使用默认日志
+	SetLogger(new(Log))
+	// 等级
+	Logger.SetLogLevel(LogLevelDebug)
+}

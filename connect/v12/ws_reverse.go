@@ -5,6 +5,7 @@ import (
 	"github.com/FishZe/go-libonebot/util"
 	"github.com/fasthttp/websocket"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -18,7 +19,11 @@ type OneBotV12WebsocketReverseConfig struct {
 	ReconnectInterval int
 	// UserAgent HTTP 请求头中的 User-Agent 字段
 	UserAgent string
-	impl      string
+	// TimeOut
+	TimeOut int
+	// BufferSize 缓存事件和响应
+	BufferSize int
+	impl       string
 }
 
 // OneBotV12ConnectWebsocketReverse 反向 WebSocket 连接
@@ -28,11 +33,27 @@ type OneBotV12ConnectWebsocketReverse struct {
 	conn        *websocket.Conn
 	sendChan    chan []byte
 	done        chan struct{}
+	tickers     sync.Map
 }
 
 // Send 直接发送数据
 func (c *OneBotV12ConnectWebsocketReverse) Send(b []byte, t int, e string) error {
-	c.sendChan <- b
+	if t == sendTypeResponse {
+		if v, ok := c.tickers.Load(e); ok {
+			c.sendChan <- b
+			ticker := v.(*util.Ticker)
+			ticker.Stop()
+			util.Logger.Debug("onebot v12 websocket reverse send :" + e + " use " + ticker.GetDurationString())
+			c.tickers.Delete(e)
+		} else {
+			// 动作超时
+			util.Logger.Warning("onebot v12 websocket reverse send :" + e + " timeout")
+		}
+	} else {
+		c.sendChan <- b
+		util.Logger.Debug("onebot v12 websocket reverse send :" + e)
+	}
+
 	return nil
 }
 
@@ -75,11 +96,22 @@ func (c *OneBotV12ConnectWebsocketReverse) startWebsocketClient() {
 					c.done <- struct{}{}
 					break
 				}
+				// 收到消息
 				if c.receiveFunc != nil {
-					_, err := c.receiveFunc(message)
+					id, err := c.receiveFunc(message)
 					if err != nil {
 						util.Logger.Warning("websocket receive error: " + err.Error())
 					}
+					c.tickers.Store(id, util.NewTicker())
+					// 记录动作id
+					go func(id string) {
+						time.Sleep(time.Duration(c.config.TimeOut) * time.Millisecond)
+						if _, ok := c.tickers.Load(id); ok {
+							c.tickers.Delete(id)
+							// 超时
+							util.Logger.Warning("onebot v12 websocket reverse receive timeout: " + id)
+						}
+					}(id)
 				}
 			}
 		} else {
@@ -100,7 +132,7 @@ func (c *OneBotV12ConnectWebsocketReverse) Start() error {
 func NewOneBotV12ConnectWebsocketReverse(config *OneBotV12WebsocketReverseConfig) (*OneBotV12ConnectWebsocketReverse, error) {
 	onebot := OneBotV12ConnectWebsocketReverse{
 		config:   config,
-		sendChan: make(chan []byte, 65535),
+		sendChan: make(chan []byte, config.BufferSize),
 		done:     make(chan struct{}),
 	}
 	err := onebot.Start()

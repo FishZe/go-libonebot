@@ -25,8 +25,4 @@ func SetJsonCoder(j jsonCoder) {
 func init() {
 	// 默认使用sonic
 	SetJsonCoder(new(json.DefaultJson))
-	// 使用默认日志
-	SetLogger(new(Log))
-	// 等级
-	Logger.SetLogLevel(LogLevelWarning)
 }

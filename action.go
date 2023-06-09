@@ -2,6 +2,7 @@ package go_libonebot
 
 import (
 	"github.com/FishZe/go-libonebot/protocol"
+	"github.com/FishZe/go-libonebot/util"
 	"sync"
 )
 
@@ -32,8 +33,10 @@ func (a *ActionMux) DeleteRequestInterface(action string) {
 
 // GetRequestInterface 获取一个请求处理接口
 func (a *ActionMux) GetRequestInterface(action string) (f protocol.RequestInterface) {
+	util.Logger.Debug("mux action request: " + action)
 	ff, ok := a.actionHandleFunc.Load(action)
 	if !ok {
+		util.Logger.Warning("mux action request: " + action + " not found")
 		return nil
 	}
 	return ff.(protocol.RequestInterface)
