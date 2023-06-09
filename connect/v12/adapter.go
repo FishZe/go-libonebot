@@ -13,7 +13,23 @@ type OneBotV12Response struct {
 }
 
 // ConnectSendEvent 发送事件
-func (o *OneBotV12) ConnectSendEvent(e any, eid string) error {
+func (o *OneBotV12) ConnectSendEvent(e any, eid string, eType string) error {
+	if eType == "meta/connect" {
+		// HTTP 和 HTTP Webhook 通信方式不需要产生连接事件。
+		if o.connectType == ConnectTypeHttp || o.connectType == ConnectTypeWebhook {
+			return nil
+		}
+	}
+	if o.connectType == ConnectTypeHttp && o.config.HttpConfig.EventEnable {
+		// 为http开启了事件缓存
+		for len(o.eventQueue) >= o.config.HttpConfig.EventBufferSize && o.config.HttpConfig.EventBufferSize != 0 && len(o.eventQueue) != 0 {
+			// 检查是否超过缓存大小
+			_ = <-o.eventQueue
+		}
+		util.Logger.Debug("onebot v12 http server save event in cache: " + eid)
+		o.eventQueue <- e
+		return nil
+	}
 	s, err := util.Json.Marshal(e)
 	if err != nil {
 		util.Logger.Warning("onebot v12 marshal event error: " + err.Error())
@@ -79,6 +95,33 @@ func (o *OneBotV12) receiveMessage(b []byte) (string, error) {
 	}
 	x.Request.NewID()
 	x.Request.ConnectionUUID = o.GetUUID()
+
+	// 处理http请求的get_latest_events事件
+	if x.Request.Action == "get_latest_events" && o.config.ConnectType == ConnectTypeHttp {
+		if o.config.HttpConfig.EventEnable {
+			go func(r protocol.RawRequestType) {
+				e := protocol.NewResponseGetLatestEvents(0)
+				e.SetID(x.Request.GetID())
+				e.Echo = x.Request.Echo
+				// 从缓存中找到所有的事件
+				for len(o.eventQueue) != 0 {
+					v := <-o.eventQueue
+					e.Events = append(e.Events, v)
+				}
+				_ = o.ConnectSendResponse(e)
+			}(x)
+		} else {
+			// 没有开启get_latest_events
+			// 返回错误码
+			go func(r protocol.RawRequestType) {
+				e := protocol.NewEmptyResponse(protocol.ResponseCodeUnsupportedAction)
+				e.SetID(x.Request.GetID())
+				e.Echo = x.Request.Echo
+				_ = o.ConnectSendResponse(e)
+			}(x)
+		}
+		return x.Request.GetID(), nil
+	}
 	if len(o.botList) == 1 {
 		// 试图补充self字段
 		// 方便后续使用
@@ -100,6 +143,7 @@ func (o *OneBotV12) receiveMessage(b []byte) (string, error) {
 				go func(id string) {
 					e := protocol.NewEmptyResponse(protocol.ResponseCodeInternalHandlerError)
 					e.SetID(x.Request.GetID())
+					e.Echo = x.Request.Echo
 					_ = o.ConnectSendResponse(e)
 				}(x.Request.GetID())
 			}
@@ -108,6 +152,7 @@ func (o *OneBotV12) receiveMessage(b []byte) (string, error) {
 			go func(id string) {
 				e := protocol.NewEmptyResponse(protocol.ResponseCodeUnknownSelf)
 				e.SetID(id)
+				e.Echo = x.Request.Echo
 				_ = o.ConnectSendResponse(e)
 			}(x.Request.GetID())
 		}

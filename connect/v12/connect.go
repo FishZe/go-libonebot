@@ -32,6 +32,8 @@ var (
 	ErrorBotNotExist = errors.New("bot does not exist")
 	// ErrorNoConnection 没有连接
 	ErrorNoConnection = errors.New("no connection")
+	// ErrorPortInUsed 端口被占用
+	ErrorPortInUsed = errors.New("the port is in used")
 )
 
 // OneBotV12Connect 连接接口
@@ -56,6 +58,12 @@ type OneBotV12 struct {
 	connect OneBotV12Connect
 	// impl 实现名称
 	impl string
+	// eventQueue 事件队列
+	eventQueue chan any
+	// config 配置
+	config *OneBotV12Config
+	// version 实现的版本
+	version string
 }
 
 // OneBotV12Config OneBot V12连接配置
@@ -80,7 +88,16 @@ func NewOneBotV12Connect(config OneBotV12Config) (*OneBotV12, error) {
 	// 创建连接
 	onebot := OneBotV12{
 		connectionUUID: util.GetUUID(),
+		connectType:    config.ConnectType,
 		botList:        make([]protocol.Self, 0),
+		config:         &config,
+	}
+	if config.ConnectType == ConnectTypeHttp && config.HttpConfig.EventEnable {
+		// 开启事件队列的http连接
+		if config.HttpConfig.EventBufferSize <= 0 {
+			config.HttpConfig.EventBufferSize = 65535
+		}
+		onebot.eventQueue = make(chan any, config.HttpConfig.EventBufferSize)
 	}
 	var err error
 	switch config.ConnectType {
@@ -125,6 +142,7 @@ func NewOneBotV12Connect(config OneBotV12Config) (*OneBotV12, error) {
 	// 绑定接收函数
 	onebot.connect.BindReceiveFunc(onebot.receiveMessage)
 	util.Logger.Debug("onebot v12 make connect success")
+	onebot.SendConnectEvent()
 	return &onebot, nil
 }
 
@@ -146,12 +164,14 @@ func (o *OneBotV12) AddBot(impl string, version string, oneBotVersion string, se
 		PlatForm: self.PlatForm,
 		UserId:   self.UserId,
 	})
+	o.version = version
 	if impl != "" {
 		o.impl = impl
 	} else {
 		o.impl = "github.com/FishZe/go-libonebot"
 	}
 	util.Logger.Debug("onebot v12 add bot success")
+	o.SendStatusUpdate()
 	return nil
 }
 
@@ -175,4 +195,34 @@ func (*OneBotV12) GetVersion() string {
 // GetUUID 获取连接的uuid
 func (o *OneBotV12) GetUUID() string {
 	return o.connectionUUID
+}
+
+func (o *OneBotV12) SendConnectEvent() {
+	e := protocol.NewMetaEventConnect()
+	e.Version.Version = o.version
+	e.Version.Impl = o.impl
+	e.Version.OnebotVersion = o.GetVersion()
+	if eType, eid, err := protocol.EventCheck(protocol.Self{}, e); err != nil {
+		util.Logger.Warning("onebot v12 check connect event error: " + err.Error())
+	} else if err = o.ConnectSendEvent(e, eid, eType); err != nil {
+
+		util.Logger.Warning("onebot v12 send connect event error: " + err.Error())
+
+	}
+}
+
+func (o *OneBotV12) SendStatusUpdate() {
+	e := protocol.NewMetaEventStatusUpdate()
+	e.Status.Good = true
+	for _, v := range o.botList {
+		e.Status.Bots = append(e.Status.Bots, struct {
+			Self   protocol.Self `json:"self"`
+			Online bool          `json:"online"`
+		}{v, true})
+	}
+	if eType, eid, err := protocol.EventCheck(protocol.Self{}, e); err != nil {
+		util.Logger.Warning("onebot v12 send status update event error: " + err.Error())
+	} else if err = o.ConnectSendEvent(e, eid, eType); err != nil {
+		util.Logger.Warning("onebot v12 send status update event error: " + err.Error())
+	}
 }
