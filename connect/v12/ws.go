@@ -172,7 +172,10 @@ func (c *OneBotV12ConnectWebsocket) receiveHandler(w http.ResponseWriter, r *htt
 
 // Start 启动websocket服务
 func (c *OneBotV12ConnectWebsocket) Start() error {
-	// TODO: 检查ip和端口是否被占用 是否合法
+	//TODO: 检查端口是否被占用 检查ip和port是否合法
+	if !util.CheckPortAvailable(c.config.Port) {
+		return ErrorPortInUsed
+	}
 	util.Logger.Debug("starting onebot v12 websocket server...")
 	s := http.NewServeMux()
 	s.HandleFunc("/", c.receiveHandler)

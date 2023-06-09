@@ -2,6 +2,8 @@ package util
 
 import (
 	"github.com/google/uuid"
+	"net"
+	"strconv"
 	"time"
 )
 
@@ -34,4 +36,17 @@ func GetNanoTimeStamp() int64 {
 // GetFormatTime 获取当前时间的格式化字符串
 func GetFormatTime() string {
 	return time.Now().Format("2006-01-02 15:04:05")
+}
+
+// CheckPortAvailable 检查端口是否可用
+func CheckPortAvailable(port int) bool {
+	ln, err := net.Listen("tcp", ":"+strconv.Itoa(port))
+	if err != nil {
+		return false
+	}
+	err = ln.Close()
+	if err != nil {
+		return false
+	}
+	return true
 }

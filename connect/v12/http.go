@@ -27,12 +27,10 @@ type OneBotV12HttpConfig struct {
 	// TimeOut 超时时间
 	// 如果开发者在该时间内没有给出相应, 自动503
 	TimeOut int
-	// 这几个参数应该由开发者自己实现
-	//
 	// EventEnable 是否启用 get_latest_events 元动作
-	// EventEnable bool
+	EventEnable bool
 	// EventBufferSize 事件缓冲区大小，超过该大小将会丢弃最旧的事件，0 表示不限大小
-	// EventBufferSize int
+	EventBufferSize int
 }
 
 type OneBotV12ConnectHttp struct {
@@ -45,21 +43,20 @@ type OneBotV12ConnectHttp struct {
 func (c *OneBotV12ConnectHttp) Send(b []byte, t int, e string) error {
 	if t == sendTypeResponse {
 		var try = 0
-		// 尝试等待3秒 如果3秒内没有收到响应ID 则返回错误
+		// 尝试等待, 达到设置的最大超时时间
 		for {
 			if r, ok := c.requestCallBack.Load(e); ok {
 				r.(chan []byte) <- b
 				return nil
 			}
-			if try > 10 {
+			if try > c.config.TimeOut/200 {
 				util.Logger.Warning("onebot v12 http server send response timeout")
 				return ErrorResponseIDNotFound
 			}
 			try++
-			time.Sleep(time.Millisecond * 300)
+			time.Sleep(time.Millisecond * 200)
 		}
 	} else {
-		// TODO: get_latest_events
 		util.Logger.Debug("onebot v12 http server throw event: " + e)
 	}
 	return nil
@@ -80,6 +77,8 @@ func NewOneBotV12ConnectHttp(config *OneBotV12HttpConfig) (*OneBotV12ConnectHttp
 }
 
 func (c *OneBotV12ConnectHttp) receiveHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Server", "github.com/FishZe/go-libonebot")
+	w.Header().Set("OneBot-Version", "12")
 	ticker := util.NewTicker()
 	defer func() {
 		if err := r.Body.Close(); err != nil {
@@ -144,9 +143,17 @@ func (c *OneBotV12ConnectHttp) receiveHandler(w http.ResponseWriter, r *http.Req
 		}
 		ch := make(chan []byte, 0)
 		c.requestCallBack.Store(rId, ch)
+		defer func() {
+			// 关闭channel, 删除映射关系
+			util.Logger.Debug("onebot v12 http server delete response: " + rId)
+			close(ch)
+			c.requestCallBack.Delete(rId)
+		}()
 		util.Logger.Debug("onebot v12 http server waiting response: " + rId)
 		// 一旦开始读取 HTTP 请求体，此后所有出错情形应通过动作响应的 retcode 字段区分，HTTP 状态码返回 200 OK
 		w.WriteHeader(http.StatusOK)
+		// 定时, 达到超时时间后返回
+		tick := time.NewTicker(time.Second * time.Duration(c.config.TimeOut))
 		// 等待response
 		for {
 			select {
@@ -156,17 +163,15 @@ func (c *OneBotV12ConnectHttp) receiveHandler(w http.ResponseWriter, r *http.Req
 				if err != nil {
 					util.Logger.Error("onebot v12 http server respond error: " + err.Error())
 				}
-				// 关闭channel, 删除映射关系
-				close(ch)
-				c.requestCallBack.Delete(rId)
 				return
-				//default:
-				//time.Sleep(time.Microsecond * 100)
+			case <-tick.C:
+				util.Logger.Debug("onebot v12 http server receive response timeout: " + rId)
+				return
 			}
 		}
 	case "application/msgpack":
 		w.Header().Set("Content-Type", "application/msgpack")
-	// TODO: 完善 msgpack 的支持
+	//TODO: 完善 msgpack 的支持
 	default:
 		// 如果收到不支持的 Content-Type 请求头，必须返回 HTTP 状态码 415 Unsupported Media Type
 		w.WriteHeader(http.StatusUnsupportedMediaType)
@@ -174,7 +179,10 @@ func (c *OneBotV12ConnectHttp) receiveHandler(w http.ResponseWriter, r *http.Req
 }
 
 func (c *OneBotV12ConnectHttp) Start() error {
-	// TODO: 检查端口是否被占用 检查ip和port是否合法
+	//TODO: 检查端口是否被占用 检查ip和port是否合法
+	if !util.CheckPortAvailable(c.config.Port) {
+		return ErrorPortInUsed
+	}
 	/*
 		OneBot 实现应该根据用户配置启动 HTTP 服务器，监听指定的 <host>:<port>，接受路径为 / 的 POST 请求，将 HTTP 请求体的内容解析为动作请求，处理后在 HTTP 响应体中返回动作响应。
 	*/
