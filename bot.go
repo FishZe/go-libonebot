@@ -49,6 +49,7 @@ func NewOneBot(config OneBotConfig, userId string) (b *Bot) {
 	}
 	b.requestChan = make(chan protocol.RawRequestType, 65535)
 	b.startRequestChan()
+	// 开启心跳
 	go b.startHeartBeat()
 	return
 }
@@ -75,6 +76,8 @@ func (b *Bot) Handle(mux *ActionMux) {
 	b.handleMux = mux
 }
 
+// startHeartBeat 开启心跳
+// @receiver b
 func (b *Bot) startHeartBeat() {
 	if b.heartBeatInterval <= 0 {
 		return

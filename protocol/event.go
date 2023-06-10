@@ -41,7 +41,7 @@ type MetaEventConnect struct {
 func NewMetaEventConnect() (e *MetaEventConnect) {
 	e = new(MetaEventConnect)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeMeta
+	e.Event.Type = EventTypeMeta
 	e.Event.DetailType = "connect"
 	return
 }
@@ -57,7 +57,7 @@ type MetaEventHeartbeat struct {
 func NewMetaEventHeartbeat() (e *MetaEventHeartbeat) {
 	e = new(MetaEventHeartbeat)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeMeta
+	e.Event.Type = EventTypeMeta
 	e.Event.DetailType = "heartbeat"
 	return
 }
@@ -85,7 +85,7 @@ type MetaEventStatusUpdate struct {
 func NewMetaEventStatusUpdate() (e *MetaEventStatusUpdate) {
 	e = new(MetaEventStatusUpdate)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeMeta
+	e.Event.Type = EventTypeMeta
 	e.Event.DetailType = "status_update"
 	e.Status.Bots = make([]struct {
 		Self   Self `json:"self"`
@@ -113,7 +113,7 @@ type MessageEventPrivate struct {
 func NewMessageEventPrivate() (e *MessageEventPrivate) {
 	e = new(MessageEventPrivate)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeMessage
+	e.Event.Type = EventTypeMessage
 	e.Event.DetailType = "private"
 	return
 }
@@ -139,7 +139,7 @@ type MessageEventGroup struct {
 func NewMessageEventGroup() (e *MessageEventGroup) {
 	e = new(MessageEventGroup)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeMessage
+	e.Event.Type = EventTypeMessage
 	e.Event.DetailType = "group"
 	return
 }
@@ -167,7 +167,7 @@ type MessageEventChannel struct {
 func NewMessageEventChannel() (e *MessageEventChannel) {
 	e = new(MessageEventChannel)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeMessage
+	e.Event.Type = EventTypeMessage
 	e.Event.DetailType = "channel"
 	return
 }
@@ -185,7 +185,7 @@ type NoticeEventFriendIncrease struct {
 func NewNoticeEventFriendIncrease() (e *NoticeEventFriendIncrease) {
 	e = new(NoticeEventFriendIncrease)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "friend_increase"
 	return
 }
@@ -203,7 +203,7 @@ type NoticeEventFriendDecrease struct {
 func NewNoticeEventFriendDecrease() (e *NoticeEventFriendDecrease) {
 	e = new(NoticeEventFriendDecrease)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "friend_decrease"
 	return
 }
@@ -223,7 +223,7 @@ type NoticeEventMessageDelete struct {
 func NewNoticeEventMessageDelete() (e *NoticeEventMessageDelete) {
 	e = new(NoticeEventMessageDelete)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "private_message_delete"
 	return
 }
@@ -247,7 +247,7 @@ type NoticeEventGroupMemberIncrease struct {
 func NewNoticeEventGroupMemberIncrease(subType string) (e *NoticeEventGroupMemberIncrease) {
 	e = new(NoticeEventGroupMemberIncrease)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "group_member_increase"
 	e.Event.SubType = subType
 	return
@@ -272,7 +272,7 @@ type NoticeEventGroupMemberDecrease struct {
 func NewNoticeEventGroupMemberDecrease(subType string) (e *NoticeEventGroupMemberDecrease) {
 	e = new(NoticeEventGroupMemberDecrease)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "group_member_decrease"
 	e.Event.SubType = subType
 	return
@@ -297,7 +297,7 @@ type NoticeEventGroupMessageDelete struct {
 func NewNoticeEventGroupMessageDelete(subType string) (e *NoticeEventGroupMessageDelete) {
 	e = new(NoticeEventGroupMessageDelete)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "group_message_delete"
 	e.Event.SubType = subType
 	return
@@ -322,7 +322,7 @@ type NoticeEventGuildMemberIncrease struct {
 func NewNoticeEventGuildMemberIncrease(subType string) (e *NoticeEventGuildMemberIncrease) {
 	e = new(NoticeEventGuildMemberIncrease)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "guild_member_increase"
 	e.Event.SubType = subType
 	return
@@ -347,7 +347,7 @@ type NoticeEventGuildMemberDecrease struct {
 func NewNoticeEventGuildMemberDecrease(subType string) (e *NoticeEventGuildMemberDecrease) {
 	e = new(NoticeEventGuildMemberDecrease)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "guild_member_decrease"
 	e.Event.SubType = subType
 	return
@@ -374,7 +374,7 @@ type NoticeEventChannelMemberIncrease struct {
 func NewNoticeEventChannelMemberIncrease(subType string) (e *NoticeEventChannelMemberIncrease) {
 	e = new(NoticeEventChannelMemberIncrease)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "channel_member_increase"
 	e.Event.SubType = subType
 	return
@@ -401,7 +401,7 @@ type NoticeEventChannelMemberDecrease struct {
 func NewNoticeEventChannelMemberDecrease(subType string) (e *NoticeEventChannelMemberDecrease) {
 	e = new(NoticeEventChannelMemberDecrease)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "channel_member_decrease"
 	e.Event.SubType = subType
 	return
@@ -430,7 +430,7 @@ type NoticeEventChannelMessageDelete struct {
 func NewNoticeEventChannelMessageDelete(subType string) (e *NoticeEventChannelMessageDelete) {
 	e = new(NoticeEventChannelMessageDelete)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "channel_message_delete"
 	e.Event.SubType = subType
 	return
@@ -453,7 +453,7 @@ type NoticeEventChannelCreate struct {
 func NewNoticeEventChannelCreate() (e *NoticeEventChannelCreate) {
 	e = new(NoticeEventChannelCreate)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "channel_create"
 	return
 }
@@ -475,7 +475,7 @@ type NoticeEventChannelDelete struct {
 func NewNoticeEventChannelDelete() (e *NoticeEventChannelDelete) {
 	e = new(NoticeEventChannelDelete)
 	e.Event = new(Event)
-	e.Event.Type = ActionTypeNotice
+	e.Event.Type = EventTypeNotice
 	e.Event.DetailType = "channel_delete"
 	return
 }

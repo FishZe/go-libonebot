@@ -7,14 +7,14 @@ import (
 )
 
 const (
-	// ActionTypeMeta 元事件
-	ActionTypeMeta = "meta"
-	// ActionTypeMessage 消息事件
-	ActionTypeMessage = "message"
-	// ActionTypeNotice 通知事件
-	ActionTypeNotice = "notice"
-	// ActionTypeRequest 请求事件
-	ActionTypeRequest = "request"
+	// EventTypeMeta 元事件
+	EventTypeMeta = "meta"
+	// EventTypeMessage 消息事件
+	EventTypeMessage = "message"
+	// EventTypeNotice 通知事件
+	EventTypeNotice = "notice"
+	// EventTypeRequest 请求事件
+	EventTypeRequest = "request"
 )
 
 var (
@@ -59,7 +59,7 @@ func EventCheck(s Self, e any) (string, string, error) {
 		return "", "", ErrorInvalidEvent
 	}
 	newEvent := reflect.ValueOf(e).Elem().Field(eventId).Interface().(*Event)
-	if newEvent.Type == "" || (newEvent.Type != ActionTypeMessage && newEvent.Type != ActionTypeMeta && newEvent.Type != ActionTypeNotice && newEvent.Type != ActionTypeRequest) {
+	if newEvent.Type == "" || (newEvent.Type != EventTypeMessage && newEvent.Type != EventTypeMeta && newEvent.Type != EventTypeNotice && newEvent.Type != EventTypeRequest) {
 		// 事件类型无效
 		util.Logger.Warning("EventCheck: event not valid")
 		return "", "", ErrorInValidEventType
@@ -73,5 +73,6 @@ func EventCheck(s Self, e any) (string, string, error) {
 	}
 	newEvent.Self = s
 	util.Logger.Debug("event check: " + newEvent.ID + " success")
+	// 返回事件类型, 方便针对不同的连接进行单独处理
 	return newEvent.Type + "/" + newEvent.DetailType, newEvent.ID, nil
 }

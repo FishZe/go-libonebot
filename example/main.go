@@ -101,7 +101,7 @@ func main() {
 
 	/*
 		// 自定义动作的实现
-		mux.AddRequestInterface("my_action", &MyActionRequest{})
+		mux.AddRequestInterface(&MyActionRequest{})
 	*/
 
 	// 把事件处理器加入到bot
