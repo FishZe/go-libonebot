@@ -1,0 +1,618 @@
+[
+  {
+    "Version": "90a1bb8cec4bdc9772bb301ad3e6b43e27d60954",
+    "Date": 1686423885,
+    "Tags": [
+      "ref=refs/heads/gh-pages"
+    ],
+    "Suites": [
+      {
+        "Goos": "linux",
+        "Goarch": "amd64",
+        "Pkg": "github.com/FishZe/go-libonebot/protocol",
+        "Benchmarks": [
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_1",
+            "Runs": 149124723,
+            "NsPerOp": 8.045,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_1-2",
+            "Runs": 149264347,
+            "NsPerOp": 8.048,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_2",
+            "Runs": 100000000,
+            "NsPerOp": 11.09,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_2-2",
+            "Runs": 100000000,
+            "NsPerOp": 11.11,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_3",
+            "Runs": 47146014,
+            "NsPerOp": 25.73,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_3-2",
+            "Runs": 43106355,
+            "NsPerOp": 25.71,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_4",
+            "Runs": 12840547,
+            "NsPerOp": 93.19,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_4-2",
+            "Runs": 11956999,
+            "NsPerOp": 97.18,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_5",
+            "Runs": 10682994,
+            "NsPerOp": 109,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_5-2",
+            "Runs": 10543028,
+            "NsPerOp": 114.9,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_6",
+            "Runs": 8553673,
+            "NsPerOp": 139.2,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_6-2",
+            "Runs": 7406382,
+            "NsPerOp": 146.2,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_7",
+            "Runs": 8436627,
+            "NsPerOp": 140.1,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_error_7-2",
+            "Runs": 7969581,
+            "NsPerOp": 145.4,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_normal_1",
+            "Runs": 3709902,
+            "NsPerOp": 335.3,
+            "Mem": {
+              "BytesPerOp": 80,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_test_normal_1-2",
+            "Runs": 3999872,
+            "NsPerOp": 301.5,
+            "Mem": {
+              "BytesPerOp": 80,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_ID_\u0026_Time_been_covered",
+            "Runs": 4144713,
+            "NsPerOp": 292.5,
+            "Mem": {
+              "BytesPerOp": 48,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_ID_\u0026_Time_been_covered-2",
+            "Runs": 4231687,
+            "NsPerOp": 287.3,
+            "Mem": {
+              "BytesPerOp": 48,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_self_auto_set",
+            "Runs": 3951508,
+            "NsPerOp": 302.4,
+            "Mem": {
+              "BytesPerOp": 80,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_self_auto_set-2",
+            "Runs": 4104024,
+            "NsPerOp": 298.6,
+            "Mem": {
+              "BytesPerOp": 80,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_self_auto_set#01",
+            "Runs": 3626133,
+            "NsPerOp": 323.8,
+            "Mem": {
+              "BytesPerOp": 96,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkEventCheck/Event_self_auto_set#01-2",
+            "Runs": 3901834,
+            "NsPerOp": 307.3,
+            "Mem": {
+              "BytesPerOp": 96,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_error_1",
+            "Runs": 149397242,
+            "NsPerOp": 8.037,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_error_1-2",
+            "Runs": 149277000,
+            "NsPerOp": 8.481,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_error_2",
+            "Runs": 48019286,
+            "NsPerOp": 25.47,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_error_2-2",
+            "Runs": 46725565,
+            "NsPerOp": 25.89,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_error_3",
+            "Runs": 100000000,
+            "NsPerOp": 10.65,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_error_3-2",
+            "Runs": 100000000,
+            "NsPerOp": 10.1,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request__test_error_4",
+            "Runs": 13239790,
+            "NsPerOp": 90.76,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request__test_error_4-2",
+            "Runs": 12699954,
+            "NsPerOp": 95.16,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_error_5",
+            "Runs": 12498752,
+            "NsPerOp": 96.45,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_error_5-2",
+            "Runs": 11866141,
+            "NsPerOp": 96.36,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_error_6",
+            "Runs": 10474339,
+            "NsPerOp": 106.3,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_error_6-2",
+            "Runs": 10636527,
+            "NsPerOp": 112.4,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_error_7",
+            "Runs": 9137107,
+            "NsPerOp": 129.4,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_error_7-2",
+            "Runs": 8704737,
+            "NsPerOp": 132.9,
+            "Mem": {
+              "BytesPerOp": 8,
+              "AllocsPerOp": 1,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_normal_1",
+            "Runs": 397009,
+            "NsPerOp": 2980,
+            "Mem": {
+              "BytesPerOp": 1400,
+              "AllocsPerOp": 25,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_normal_1-2",
+            "Runs": 393571,
+            "NsPerOp": 2725,
+            "Mem": {
+              "BytesPerOp": 1400,
+              "AllocsPerOp": 25,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_normal_2",
+            "Runs": 1832,
+            "NsPerOp": 654044,
+            "Mem": {
+              "BytesPerOp": 63912,
+              "AllocsPerOp": 10987,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkRequestAdapter/Request_test_normal_2-2",
+            "Runs": 1746,
+            "NsPerOp": 700605,
+            "Mem": {
+              "BytesPerOp": 63912,
+              "AllocsPerOp": 10987,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_1",
+            "Runs": 164639874,
+            "NsPerOp": 7.582,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_1-2",
+            "Runs": 165820663,
+            "NsPerOp": 7.763,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_2",
+            "Runs": 123673810,
+            "NsPerOp": 9.7,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_2-2",
+            "Runs": 100000000,
+            "NsPerOp": 10.22,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_3",
+            "Runs": 48080289,
+            "NsPerOp": 24.69,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_3-2",
+            "Runs": 42617089,
+            "NsPerOp": 24.68,
+            "Mem": {
+              "BytesPerOp": 0,
+              "AllocsPerOp": 0,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_4",
+            "Runs": 4592894,
+            "NsPerOp": 262.5,
+            "Mem": {
+              "BytesPerOp": 48,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_4-2",
+            "Runs": 4639486,
+            "NsPerOp": 270,
+            "Mem": {
+              "BytesPerOp": 48,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_5",
+            "Runs": 4296225,
+            "NsPerOp": 283.1,
+            "Mem": {
+              "BytesPerOp": 64,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_5-2",
+            "Runs": 4657256,
+            "NsPerOp": 257.7,
+            "Mem": {
+              "BytesPerOp": 64,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_6",
+            "Runs": 2914441,
+            "NsPerOp": 398.1,
+            "Mem": {
+              "BytesPerOp": 88,
+              "AllocsPerOp": 4,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_6-2",
+            "Runs": 3092838,
+            "NsPerOp": 390.4,
+            "Mem": {
+              "BytesPerOp": 88,
+              "AllocsPerOp": 4,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_7",
+            "Runs": 3997195,
+            "NsPerOp": 299.7,
+            "Mem": {
+              "BytesPerOp": 64,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_error_7-2",
+            "Runs": 3700852,
+            "NsPerOp": 306.4,
+            "Mem": {
+              "BytesPerOp": 64,
+              "AllocsPerOp": 3,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_normal_1",
+            "Runs": 2707561,
+            "NsPerOp": 438.4,
+            "Mem": {
+              "BytesPerOp": 128,
+              "AllocsPerOp": 4,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_normal_1-2",
+            "Runs": 3076047,
+            "NsPerOp": 381.4,
+            "Mem": {
+              "BytesPerOp": 128,
+              "AllocsPerOp": 4,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_normal_2",
+            "Runs": 2912799,
+            "NsPerOp": 413.1,
+            "Mem": {
+              "BytesPerOp": 128,
+              "AllocsPerOp": 4,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_normal_2-2",
+            "Runs": 3050185,
+            "NsPerOp": 387.4,
+            "Mem": {
+              "BytesPerOp": 128,
+              "AllocsPerOp": 4,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_normal_3",
+            "Runs": 2649541,
+            "NsPerOp": 446.7,
+            "Mem": {
+              "BytesPerOp": 128,
+              "AllocsPerOp": 4,
+              "MBPerSec": 0
+            }
+          },
+          {
+            "Name": "BenchmarkResponseCheck/Response_test_normal_3-2",
+            "Runs": 3073191,
+            "NsPerOp": 387.5,
+            "Mem": {
+              "BytesPerOp": 128,
+              "AllocsPerOp": 4,
+              "MBPerSec": 0
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
