@@ -24,10 +24,6 @@ jobs:
           # Optional: pass GITHUB_TOKEN to avoid rate limiting.
           token: ${{ secrets.TOKEN }}
 
-      # Alternatively, install using go install
-      - name: Set up gotestfmt
-        run: go install github.com/gotesttools/gotestfmt/v2/cmd/gotestfmt@latest
-
       # Run tests with nice formatting. Save the original log in /tmp/gotest.log
       - name: Run tests
         run: |
