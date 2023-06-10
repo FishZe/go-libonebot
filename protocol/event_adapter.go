@@ -35,7 +35,7 @@ var (
 // e: Event 事件 需要满足条件
 func EventCheck(s Self, e any) (string, string, error) {
 	// 寻找是否存在Event类型字段
-	if reflect.TypeOf(e).Kind() != reflect.Ptr || reflect.TypeOf(e).Elem().Kind() != reflect.Struct {
+	if e == nil || reflect.TypeOf(e).Kind() != reflect.Ptr || reflect.TypeOf(e).Elem().Kind() != reflect.Struct {
 		util.Logger.Warning("EventCheck: arg not a onebot event struct")
 		return "", "", ErrorInvalidEvent
 	}

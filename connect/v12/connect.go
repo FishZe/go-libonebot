@@ -181,7 +181,7 @@ func (o *OneBotV12) AddBot(impl string, version string, oneBotVersion string, se
 		o.impl = "github.com/FishZe/go-libonebot"
 	}
 	util.Logger.Debug("onebot v12 add bot success")
-	//o.SendStatusUpdate()
+	o.SendStatusUpdate()
 	return nil
 }
 

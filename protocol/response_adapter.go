@@ -131,6 +131,10 @@ func (r *Response) SetID(s string) {
 
 // ResponseCheck 检查响应是否合法
 func ResponseCheck(r *Request, e any) error {
+	if r == nil || e == nil {
+		util.Logger.Warning("Response Check: arg is nil")
+		return ErrorInvalidResponse
+	}
 	// 不是指针或者不是结构体
 	if reflect.TypeOf(e).Kind() != reflect.Ptr || reflect.TypeOf(e).Elem().Kind() != reflect.Struct {
 		util.Logger.Warning("Response Check: arg not a onebot response struct")
@@ -140,6 +144,7 @@ func ResponseCheck(r *Request, e any) error {
 	// 判断是否存在Response类型字段
 	t := reflect.TypeOf(e).Elem()
 	for i := 0; i < t.NumField(); i++ {
+		util.Logger.Warning(t.Field(i).Type.String() + " " + ResponseType.String())
 		if t.Field(i).Type == ResponseType {
 			responseId = i
 			break

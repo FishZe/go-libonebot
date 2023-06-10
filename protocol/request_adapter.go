@@ -10,6 +10,12 @@ import (
 var (
 	// ErrorInvalidRequest 该结构体不是一个OneBot事件
 	ErrorInvalidRequest = errors.New("arg not a onebot request struct")
+	// ErrorRequestIsNil 请求为空
+	ErrorRequestIsNil = errors.New("request is nil")
+	// ErrorRequestNotMatch 请求不匹配
+	ErrorRequestNotMatch = errors.New("request not match")
+	// ErrorActionEmpty 动作为空
+	ErrorActionEmpty = errors.New("action is empty")
 )
 
 var (
@@ -51,42 +57,50 @@ type RawRequestType struct {
 	Param map[string]any `json:"params"`
 }
 
-// RawRequestTypeToRequest 将RawRequestType转换为Request
-func RawRequestTypeToRequest(e any, r RawRequestType) error {
-	if reflect.TypeOf(e).Kind() != reflect.Ptr || reflect.TypeOf(e).Elem().Kind() != reflect.Struct {
+// RequestAdapter 将RawRequestType转换为Request
+func RequestAdapter(e any, r RawRequestType) error {
+	if e == nil || reflect.TypeOf(e).Kind() != reflect.Ptr || reflect.TypeOf(e).Elem().Kind() != reflect.Struct {
 		util.Logger.Warning("RawRequestType To Request: arg not a onebot request struct")
 		return ErrorInvalidRequest
 	}
 	t := reflect.TypeOf(e).Elem()
 	v := reflect.ValueOf(e).Elem()
-	// 类型不对
-	if reflect.ValueOf(e).Elem().Kind() != reflect.Struct || reflect.ValueOf(e).Elem() == reflect.Zero(t) {
-		util.Logger.Warning("RawRequestType To Request: arg not a onebot request struct")
-		return ErrorInvalidRequest
-	}
 	findRequest := false
 	for i := 0; i < t.NumField(); i++ {
 		if t.Field(i).Type == RequestType {
 			// 找到Request类型字段
-			if !v.Field(i).IsValid() {
+			if !v.Field(i).IsValid() || v.Field(i).IsNil() {
 				// 不符合
-				return ErrorInvalidRequest
-			} else if v.Field(i).IsNil() {
-				// 未设置
-				v.Field(i).Set(reflect.ValueOf(&Request{}))
+				return ErrorRequestIsNil
 			}
 			findRequest = true
+			if v.Field(i).Interface().(*Request).Action == "" || r.Action == "" {
+				return ErrorActionEmpty
+			}
+			if v.Field(i).Interface().(*Request).Action != r.Action {
+				return ErrorRequestNotMatch
+			}
 			// 修改Request
-			v.Field(i).Interface().(*Request).Action = r.Action
-			v.Field(i).Interface().(*Request).Echo = r.Echo
-			v.Field(i).Interface().(*Request).Self = r.Self
-			v.Field(i).Interface().(*Request).ConnectionUUID = r.ConnectionUUID
+			/*
+				v.Field(i).Interface().(*Request).Action = r.Action
+				v.Field(i).Interface().(*Request).Echo = r.Echo
+				v.Field(i).Interface().(*Request).Self = r.Self
+				v.Field(i).Interface().(*Request).ConnectionUUID = r.ConnectionUUID
+			*/
+			newRequest := Request{
+				Action:         r.Action,
+				Echo:           r.Echo,
+				Self:           r.Self,
+				ConnectionUUID: r.ConnectionUUID,
+				requestID:      r.requestID,
+			}
+			v.Field(i).Set(reflect.ValueOf(&newRequest))
 		}
 	}
 	// 未找到Request类型字段
 	if !findRequest {
 		// 该结构体不是一个OneBot动作请求
-		return ErrorInvalidResponse
+		return ErrorInvalidRequest
 	}
 	// 赋值
 	if decoder, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
