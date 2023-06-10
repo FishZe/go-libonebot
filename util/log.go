@@ -84,7 +84,7 @@ func (l *Log) getLevelString(level int) string {
 // print 打印
 func (l *Log) print(level int, s string) {
 	if l.level >= level {
-		fmt.Println(fmt.Sprintf("%s[%s][%s]%s%s", l.getColor(level), GetFormatTime(), l.getLevelString(level), s, l.getColor(-1)))
+		fmt.Println(fmt.Sprintf("%s[LIBOB][%s][%s]%s%s", l.getColor(level), GetFormatTime(), l.getLevelString(level), s, l.getColor(-1)))
 	}
 }
 
@@ -117,5 +117,5 @@ func init() {
 	// 使用默认日志
 	SetLogger(new(Log))
 	// 等级
-	Logger.SetLogLevel(LogLevelDebug)
+	Logger.SetLogLevel(LogLevelWarning)
 }

@@ -40,6 +40,9 @@ func (t *Ticker) Stop() {
 
 // GetDuration 获取计时器的时间 纳秒
 func (t *Ticker) GetDuration() int64 {
+	if t.endTime == 0 {
+		return GetNanoTimeStamp() - t.startTime
+	}
 	return t.endTime - t.startTime
 }
 
