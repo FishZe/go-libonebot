@@ -22,7 +22,7 @@ jobs:
         uses: gotesttools/gotestfmt-action@v2
         with:
           # Optional: pass GITHUB_TOKEN to avoid rate limiting.
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.TOKEN }}
 
       # Alternatively, install using go install
       - name: Set up gotestfmt
