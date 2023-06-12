@@ -115,7 +115,7 @@ func (c *OneBotV12ConnectWebsocketReverse) startWebsocketClient() {
 				}
 			}
 		} else {
-			util.Logger.Error("websocket connect error: " + err.Error())
+			util.Logger.Warning("websocket connect error: " + err.Error())
 		}
 		// 等待重连
 		time.Sleep(time.Duration(c.config.ReconnectInterval) * time.Millisecond)

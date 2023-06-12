@@ -13,6 +13,7 @@ func (b *Bot) SendEvent(e any) error {
 	defer func() {
 		// recover错误
 		if err := recover(); err != nil {
+			util.PrintGoroutineStack()
 			util.Logger.Error("handle event error: " + err.(error).Error())
 		}
 	}()

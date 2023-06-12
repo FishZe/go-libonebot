@@ -17,6 +17,7 @@ func (b *Bot) startRequestChan() {
 					defer func() {
 						// recover 错误
 						if err := recover(); err != nil {
+							util.PrintGoroutineStack()
 							util.Logger.Error("handle action error: " + err.(error).Error())
 						}
 						// 没发送, 重新发送

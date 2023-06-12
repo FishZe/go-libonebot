@@ -144,7 +144,6 @@ func ResponseCheck(r *Request, e any) error {
 	// 判断是否存在Response类型字段
 	t := reflect.TypeOf(e).Elem()
 	for i := 0; i < t.NumField(); i++ {
-		util.Logger.Warning(t.Field(i).Type.String() + " " + ResponseType.String())
 		if t.Field(i).Type == ResponseType {
 			responseId = i
 			break
