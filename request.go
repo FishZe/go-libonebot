@@ -47,11 +47,13 @@ func (b *Bot) startRequestChan() {
 							// 拷贝过来
 							err := copier.Copy(handleInterface, x)
 							if err != nil {
+								util.Logger.Warning("copy handle interface failed: " + err.Error())
 								res = protocol.NewEmptyResponse(protocol.ResponseCodeBadParam)
 							} else {
 								// 将RawRequestType转换为RequestInterface
 								err = protocol.RequestAdapter(handleInterface, request)
 								if err != nil {
+									util.Logger.Warning("request adapter failed: " + err.Error())
 									res = protocol.NewEmptyResponse(protocol.ResponseCodeBadParam)
 								} else {
 									res = handleInterface.(protocol.RequestInterface).Do()
