@@ -77,9 +77,10 @@ func RequestAdapter(e any, r RawRequestType) error {
 			if v.Field(i).Interface().(*Request).Action == "" || r.Action == "" {
 				return ErrorActionEmpty
 			}
-			if v.Field(i).Interface().(*Request).Action != r.Action {
-				return ErrorRequestNotMatch
-			}
+			/*
+				if v.Field(i).Interface().(*Request).Action != r.Action {
+					return ErrorRequestNotMatch
+				}*/
 			// 修改Request
 			/*
 				v.Field(i).Interface().(*Request).Action = r.Action
@@ -103,9 +104,12 @@ func RequestAdapter(e any, r RawRequestType) error {
 		return ErrorInvalidRequest
 	}
 	// 赋值
+
 	if decoder, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		ErrorUnused: false,
 		Result:      e,
+		TagName:     "json",
+		ZeroFields:  true,
 	}); err == nil {
 		if err = decoder.Decode(r.Param); err == nil {
 			util.Logger.Debug("request " + r.requestID + " decode & check success")
