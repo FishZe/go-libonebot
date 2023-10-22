@@ -1,4 +1,4 @@
-package go_libonebot
+package protocol
 
 // OneBotConfig OneBot协议配置
 type OneBotConfig struct {
