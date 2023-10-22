@@ -27,7 +27,7 @@ func (b *Bot) SendEvent(e any) error {
 	b.connections.Range(func(key, value any) bool {
 		// 为了不影响其他连接的上报, 不处理错误
 		if value != nil {
-			err = (*(value.(*connect.Connection))).ConnectSendEvent(e, id, eType)
+			err = (*(value.(*connect.Connection))).SendEvent(e, id, eType)
 			if err != nil {
 				util.Logger.Debug("send event error: " + err.Error())
 			}

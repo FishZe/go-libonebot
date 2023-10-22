@@ -25,7 +25,7 @@ func (b *Bot) sendResponse(e any, request *protocol.Request) error {
 	}
 	// 通过连接UUID发送
 	if c, ok := b.connections.Load(request.ConnectionUUID); ok {
-		if err = (*(c.(*connect.Connection))).ConnectSendResponse(e); err != nil {
+		if err = (*(c.(*connect.Connection))).SendResponse(e); err != nil {
 			return err
 		}
 		return nil

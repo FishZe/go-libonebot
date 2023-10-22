@@ -32,7 +32,7 @@ type Bot struct {
 // NewOneBot 获取一个OneBot实例
 //
 // 需要传入config配置和userId
-func NewOneBot(config OneBotConfig, userId string) (b *Bot) {
+func NewOneBot(config protocol.OneBotConfig, userId string) (b *Bot) {
 	b = new(Bot)
 	b.info.version = config.Version
 	b.info.impl = config.Implementation

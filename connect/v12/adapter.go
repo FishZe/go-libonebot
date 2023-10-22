@@ -13,16 +13,16 @@ type OneBotV12Response struct {
 }
 
 // ConnectSendEvent 发送事件
-func (o *OneBotV12) ConnectSendEvent(e any, eid string, eType string) error {
+func (o *OneBotV12) SendEvent(e any, eid string, eType string) error {
 	if eType == "meta/connect" {
 		// HTTP 和 HTTP Webhook 通信方式不需要产生连接事件。
 		if o.connectType == ConnectTypeHttp || o.connectType == ConnectTypeWebhook {
 			return nil
 		}
 	}
-	if o.connectType == ConnectTypeHttp && o.config.HttpConfig.EventEnable {
+	if o.connectType == ConnectTypeHttp && o.config.ConnectConfig.(OneBotV12HttpConfig).EventEnable {
 		// 为http开启了事件缓存
-		for len(o.eventQueue) >= o.config.HttpConfig.EventBufferSize && o.config.HttpConfig.EventBufferSize != 0 && len(o.eventQueue) != 0 {
+		for len(o.eventQueue) >= o.config.ConnectConfig.(OneBotV12HttpConfig).EventBufferSize && o.config.ConnectConfig.(OneBotV12HttpConfig).EventBufferSize != 0 && len(o.eventQueue) != 0 {
 			// 检查是否超过缓存大小
 			_ = <-o.eventQueue
 		}
@@ -40,7 +40,7 @@ func (o *OneBotV12) ConnectSendEvent(e any, eid string, eType string) error {
 }
 
 // ConnectSendResponse 发送响应
-func (o *OneBotV12) ConnectSendResponse(e any) error {
+func (o *OneBotV12) SendResponse(e any) error {
 	// 不是指针或者不是结构体
 	if reflect.TypeOf(e).Kind() != reflect.Ptr || reflect.TypeOf(e).Elem().Kind() != reflect.Struct {
 		return protocol.ErrorInvalidResponse
@@ -98,7 +98,7 @@ func (o *OneBotV12) receiveMessage(b []byte) (string, error) {
 
 	// 处理http请求的get_latest_events事件
 	if x.Request.Action == "get_latest_events" && o.config.ConnectType == ConnectTypeHttp {
-		if o.config.HttpConfig.EventEnable {
+		if o.config.ConnectConfig.(OneBotV12HttpConfig).EventEnable {
 			go func(r protocol.RawRequestType) {
 				e := protocol.NewResponseGetLatestEvents(0)
 				e.SetID(x.Request.GetID())
@@ -108,7 +108,7 @@ func (o *OneBotV12) receiveMessage(b []byte) (string, error) {
 					v := <-o.eventQueue
 					e.Events = append(e.Events, v)
 				}
-				_ = o.ConnectSendResponse(e)
+				_ = o.SendResponse(e)
 			}(x)
 		} else {
 			// 没有开启get_latest_events
@@ -117,7 +117,7 @@ func (o *OneBotV12) receiveMessage(b []byte) (string, error) {
 				e := protocol.NewEmptyResponse(protocol.ResponseCodeUnsupportedAction)
 				e.SetID(x.Request.GetID())
 				e.Echo = x.Request.Echo
-				_ = o.ConnectSendResponse(e)
+				_ = o.SendResponse(e)
 			}(x)
 		}
 		return x.Request.GetID(), nil
@@ -144,7 +144,7 @@ func (o *OneBotV12) receiveMessage(b []byte) (string, error) {
 					e := protocol.NewEmptyResponse(protocol.ResponseCodeInternalHandlerError)
 					e.SetID(x.Request.GetID())
 					e.Echo = x.Request.Echo
-					_ = o.ConnectSendResponse(e)
+					_ = o.SendResponse(e)
 				}(x.Request.GetID())
 			}
 		} else {
@@ -153,7 +153,7 @@ func (o *OneBotV12) receiveMessage(b []byte) (string, error) {
 				e := protocol.NewEmptyResponse(protocol.ResponseCodeUnknownSelf)
 				e.SetID(id)
 				e.Echo = x.Request.Echo
-				_ = o.ConnectSendResponse(e)
+				_ = o.SendResponse(e)
 			}(x.Request.GetID())
 		}
 	}
