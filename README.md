@@ -4,17 +4,17 @@
 
 来自[onebot.dev](https://onebot.dev/introduction.html)的定义:
 
-> OneBot 是一个聊天机器人应用接口标准，旨在统一不同聊天平台上的机器人应用开发接口，使开发者只需编写一次业务逻辑代码即可应用到多种机器人平台。
+> `OneBot` 是一个聊天机器人应用接口标准，旨在统一不同聊天平台上的机器人应用开发接口，使开发者只需编写一次业务逻辑代码即可应用到多种机器人平台。
 
-OneBot协议是一个通用的机器人标准, 可以通过这套标准在机器人和各种框架间进行通信.
+`OneBot`协议是一个通用的机器人标准, 可以通过这套标准在机器人和各种框架间进行通信.
 
 如[go-cqhttp](https://github.com/Mrs4s/go-cqhttp)就是一个onebot实现, 可以通过这个实现在QQ上使用OneBot协议.
 
 又如[nonebot](https://github.com/nonebot/nonebot2)就是一个onebot框架, 开发者可以通过这个框架编写你的机器人逻辑.
 
-通过onebot协议, 可以使这两者连接起来, 实现在QQ上使用nonebot框架编写的机器人逻辑.
+通过`onebot`协议, 可以使这两者连接起来, 例如实现在`QQ`上使用`nonebot`框架编写的机器人逻辑.
 
-目前使用较多的OneBot协议有两个版本, 分别是OneBot11和OneBot12, 本项目以OneBot12为主要实现. OneBot11以兼容的方式实现 (正在适配...).
+目前使用较多的`OneBot`协议有两个版本, 分别是`OneBot11`和`OneBot12`, 本项目以`OneBot12`为主要实现. OneBot11以兼容的方式实现 (正在适配...).
 
 ### OneBot协议内容?
 
@@ -28,7 +28,7 @@ OneBot协议是一个通用的机器人标准, 可以通过这套标准在机器
 
 消息段: 机器人平台对消息的格式化表示, 如纯文本, 图片, 视频, 音频, 文件, 链接, 表情等
 
-连接: 框架和机器人平台之间的连接, 用于传输以上内容, OneBot协议包含了HTTP, Webhook, Websocket, 反向Websocket四种连接方式
+连接: 框架和机器人平台之间的连接, 用于传输以上内容, `OneBot`协议包含了`HTTP`, `Webhook`, `Websocket`, `反向Websocket`四种连接方式, 在本项目中，你也可以自行定义`OneBot`连接方式
 
 ### 什么是Libonebot?
 
@@ -41,9 +41,9 @@ OneBot协议是一个通用的机器人标准, 可以通过这套标准在机器
 
 ### 什么是Go-LibOneBot?
 
-Go-LibOneBot 是一个go语言的LibOneBot, 可以通过这个库用go语言快速制作出一个OneBot实现.
+Go-LibOneBot 是一个`go`语言的`LibOneBot`, 可以通过这个库用`go`语言快速制作出一个`OneBot`实现.
 
-内置了所有的OneBot12协议的事件和动作, 上手简单, 你只需要实现你的业务逻辑, 就可以快速制作出一个OneBot实现.
+内置了所有的`OneBot 12`协议的事件和动作, 上手简单, 你只需要实现你的业务逻辑, 就可以快速制作出一个`OneBot`实现.
 
 ## 支持 & TODO:
 
@@ -74,9 +74,9 @@ OneBot11 协议:
 - [x] 自定义事件
 - [x] 自定义动作接口
 - [x] 自定义协议和连接方式
-- [x] 自定义Json解析器和Logger
+- [x] 自定义`Json`解析器和`Logger`
 
-## 快速开始
+## 示例代码
 
 ```go
 package main
@@ -135,4 +135,6 @@ func main() {
 }
 ```
 
-具体使用方式请参考: [使用文档](doc/README.md)
+## 使用文档 
+
+[使用文档](doc/README.md)

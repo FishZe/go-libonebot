@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// 创建一份配置
-	onebotConfig := onebot.OneBotConfig{PlatForm: "QQ", Version: "1.0.0", Implementation: "MyQQImpl"}
+	onebotConfig := protocol.OneBotConfig{PlatForm: "QQ", Version: "1.0.0", Implementation: "MyQQImpl"}
 	// 创建一个bot
 	bot := onebot.NewOneBot(onebotConfig, "123456")
 	// 创建一个连接
@@ -19,7 +19,7 @@ func main() {
 		// 连接类型
 		// Http
 		ConnectType: v12.ConnectTypeHttp,
-		HttpConfig: v12.OneBotV12HttpConfig{
+		ConnectConfig: v12.OneBotV12HttpConfig{
 			Host:            "127.0.0.1",
 			Port:            20003,
 			EventEnable:     true,
@@ -33,11 +33,11 @@ func main() {
 				Port: 20003,
 			},
 		*/
+		// Websocket Reverse
 		/*
-			// Websocket Reverse
 			ConnectType: v12.ConnectTypeWebSocketReverse,
 			WebsocketReverseConfig: v12.OneBotV12WebsocketReverseConfig{
-				Url:               "ws://192.168.81.137:20001",
+				Url:               "ws://127.0.0.1:20001",
 				ReconnectInterval: 5000,
 			},
 		*/
@@ -51,7 +51,7 @@ func main() {
 				UserAgent:   "go-libonebot",
 			},
 		*/
-	})
+	}, onebotConfig)
 	if err != nil {
 		panic(err)
 	}
@@ -62,11 +62,11 @@ func main() {
 	}
 	conn2, err := v12.NewOneBotV12Connect(v12.OneBotV12Config{
 		ConnectType: v12.ConnectTypeWebSocketReverse,
-		WebsocketReverseConfig: v12.OneBotV12WebsocketReverseConfig{
-			Url:               "ws://192.168.81.137:20001",
+		ConnectConfig: v12.OneBotV12WebsocketReverseConfig{
+			Url:               "ws://127.0.0.1:20001",
 			ReconnectInterval: 5000,
 		},
-	})
+	}, onebotConfig)
 	if err != nil {
 		panic(err)
 	}
@@ -76,11 +76,11 @@ func main() {
 	}
 	conn3, err := v12.NewOneBotV12Connect(v12.OneBotV12Config{
 		ConnectType: v12.ConnectTypeWebSocket,
-		WebsocketConfig: v12.OneBotV12WebsocketConfig{
+		ConnectConfig: v12.OneBotV12WebsocketConfig{
 			Host: "127.0.0.1",
 			Port: 20004,
 		},
-	})
+	}, onebotConfig)
 	if err != nil {
 		panic(err)
 	}
@@ -93,7 +93,6 @@ func main() {
 	mux.AddRequestInterface(protocol.HandleActionSendMessage(func(e *protocol.RequestSendMessage) *protocol.ResponseSendMessage {
 		// 处理发送消息动作
 		log.Println("SendMessage: ", e.Message)
-		util.Logger.Info("SendMessage: " + e.Message[0].Data["text"].(string))
 		msg := protocol.NewResponseSendMessage(0)
 		msg.MessageId = util.GetUUID()
 		return msg
