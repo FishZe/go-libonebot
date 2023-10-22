@@ -2,6 +2,7 @@ package v12
 
 import (
 	"fmt"
+	"github.com/FishZe/go-libonebot/protocol"
 	"github.com/FishZe/go-libonebot/util"
 	"github.com/fasthttp/websocket"
 	"net/http"
@@ -12,17 +13,17 @@ import (
 // OneBotV12WebsocketReverseConfig HTTP 连接配置
 type OneBotV12WebsocketReverseConfig struct {
 	// Url 反向 WebSocket 连接地址
-	Url string
+	Url string `yaml:"url" json:"url" default:""`
 	// AccessToken 访问令牌
-	AccessToken string
+	AccessToken string `yaml:"access_token" json:"access_token" default:""`
 	// ReconnectInterval 反向 WebSocket 重连间隔，单位：毫秒，必须大于 0
-	ReconnectInterval int
+	ReconnectInterval int `yaml:"reconnect_interval" json:"reconnect_interval" default:"5000"`
 	// UserAgent HTTP 请求头中的 User-Agent 字段
-	UserAgent string
+	UserAgent string `yaml:"user_agent" json:"user_agent" default:"go-libonebot"`
 	// TimeOut
-	TimeOut int
+	TimeOut int `yaml:"time_out" json:"time_out" default:"5000"`
 	// BufferSize 缓存事件和响应
-	BufferSize int
+	BufferSize int `yaml:"buffer_size" json:"buffer_size" default:"500"`
 	impl       string
 }
 
@@ -57,8 +58,8 @@ func (c *OneBotV12ConnectWebsocketReverse) Send(b []byte, t int, e string) error
 	return nil
 }
 
-// BindReceiveFunc 绑定接收函数
-func (c *OneBotV12ConnectWebsocketReverse) BindReceiveFunc(f func([]byte) (string, error)) {
+// SetCallBackFunc 绑定接收函数
+func (c *OneBotV12ConnectWebsocketReverse) SetCallBackFunc(f OneBotV12ConnectCallBackFunc) {
 	c.receiveFunc = f
 }
 
@@ -129,9 +130,26 @@ func (c *OneBotV12ConnectWebsocketReverse) Start() error {
 }
 
 // NewOneBotV12ConnectWebsocketReverse 创建反向 WebSocket 连接
-func NewOneBotV12ConnectWebsocketReverse(config *OneBotV12WebsocketReverseConfig) (*OneBotV12ConnectWebsocketReverse, error) {
+func NewOneBotV12ConnectWebsocketReverse(oc protocol.OneBotConfig, c any) (OneBotV12Connect, error) {
+	config := c.(OneBotV12WebsocketReverseConfig)
+	if config.ReconnectInterval <= 0 {
+		// 默认5000ms
+		config.ReconnectInterval = 5000
+	}
+	if config.UserAgent == "" {
+		// 默认go-libonebot
+		config.UserAgent = "github.com/FishZe/go-libonebot"
+	}
+	if config.TimeOut <= 0 {
+		// 默认10000ms
+		config.TimeOut = 10000
+	}
+	if config.BufferSize <= 0 {
+		config.BufferSize = 65535
+	}
+	config.impl = oc.Implementation
 	onebot := OneBotV12ConnectWebsocketReverse{
-		config:   config,
+		config:   &config,
 		sendChan: make(chan []byte, config.BufferSize),
 		done:     make(chan struct{}),
 	}

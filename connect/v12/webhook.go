@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/FishZe/go-libonebot/protocol"
 	"github.com/FishZe/go-libonebot/util"
 	"io"
 	"net/http"
@@ -15,13 +16,13 @@ import (
 // OneBotV12WebHookConfig HTTP 连接配置
 type OneBotV12WebHookConfig struct {
 	// Url Webhook 上报地址
-	Url string
+	Url string `yaml:"url" json:"url" default:""`
 	//AccessToken 访问令牌
-	AccessToken string
+	AccessToken string `yaml:"access_token" json:"access_token" default:""`
 	// TimeOut 上报请求超时时间，单位：毫秒，0 表示不超时
-	TimeOut int
+	TimeOut int `yaml:"time_out" json:"time_out" default:"5000"`
 	// UserAgent
-	UserAgent string
+	UserAgent string `yaml:"user_agent" json:"user_agent" default:"go-libonebot"`
 	impl      string
 }
 
@@ -104,13 +105,18 @@ func (c *OneBotV12ConnectWebhook) Send(b []byte, t int, e string) error {
 	return nil
 }
 
-// BindReceiveFunc 绑定接收函数
-func (c *OneBotV12ConnectWebhook) BindReceiveFunc(f func([]byte) (string, error)) {
+// SetCallBackFunc 绑定接收函数
+func (c *OneBotV12ConnectWebhook) SetCallBackFunc(f OneBotV12ConnectCallBackFunc) {
 	c.receiveFunc = f
 }
 
 // NewOneBotV12ConnectWebhook 创建一个 OneBot v12 webhook 连接
-func NewOneBotV12ConnectWebhook(config *OneBotV12WebHookConfig) (*OneBotV12ConnectWebhook, error) {
-	onebot := OneBotV12ConnectWebhook{config: config}
+func NewOneBotV12ConnectWebhook(oc protocol.OneBotConfig, c any) (OneBotV12Connect, error) {
+	config := c.(OneBotV12WebHookConfig)
+	config.impl = oc.Implementation
+	if config.UserAgent == "" {
+		config.UserAgent = "github.com/FishZe/go-libonebot"
+	}
+	onebot := OneBotV12ConnectWebhook{config: &config}
 	return &onebot, nil
 }

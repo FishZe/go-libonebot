@@ -3,6 +3,7 @@ package v12
 import (
 	"errors"
 	"fmt"
+	"github.com/FishZe/go-libonebot/protocol"
 	"github.com/FishZe/go-libonebot/util"
 	"io"
 	"net/http"
@@ -19,18 +20,18 @@ var (
 // OneBotV12HttpConfig HTTP 连接配置
 type OneBotV12HttpConfig struct {
 	// Host HTTP 服务器监听 IP
-	Host string
+	Host string `yaml:"host" json:"host" default:""`
 	// Port HTTP 服务器监听端口
-	Port int
+	Port int `yaml:"port" json:"port" default:""`
 	// AccessToken 访问令牌
-	AccessToken string
+	AccessToken string `yaml:"access_token" json:"access_token" default:""`
 	// TimeOut 超时时间
 	// 如果开发者在该时间内没有给出相应, 自动503
-	TimeOut int
+	TimeOut int `yaml:"time_out" json:"time_out" default:"5000"`
 	// EventEnable 是否启用 get_latest_events 元动作
-	EventEnable bool
+	EventEnable bool `yaml:"event_enable" json:"event_enable" default:"true"`
 	// EventBufferSize 事件缓冲区大小，超过该大小将会丢弃最旧的事件，0 表示不限大小
-	EventBufferSize int
+	EventBufferSize int `yaml:"event_buffer_size" json:"event_buffer_size" default:"500"`
 }
 
 type OneBotV12ConnectHttp struct {
@@ -62,13 +63,20 @@ func (c *OneBotV12ConnectHttp) Send(b []byte, t int, e string) error {
 	return nil
 }
 
-func (c *OneBotV12ConnectHttp) BindReceiveFunc(f func([]byte) (string, error)) {
+func (c *OneBotV12ConnectHttp) SetCallBackFunc(f OneBotV12ConnectCallBackFunc) {
 	c.receiveFunc = f
 }
 
-func NewOneBotV12ConnectHttp(config *OneBotV12HttpConfig) (*OneBotV12ConnectHttp, error) {
+func NewOneBotV12ConnectHttp(_ protocol.OneBotConfig, c any) (OneBotV12Connect, error) {
 	newHttpConnect := OneBotV12ConnectHttp{}
-	newHttpConnect.config = config
+	config := c.(OneBotV12HttpConfig)
+	if config.TimeOut <= 0 {
+		config.TimeOut = 5000
+	}
+	if config.EventBufferSize <= 0 {
+		config.EventBufferSize = 65536
+	}
+	newHttpConnect.config = &config
 	err := newHttpConnect.Start()
 	if err != nil {
 		return nil, err

@@ -2,6 +2,7 @@ package v12
 
 import (
 	"fmt"
+	"github.com/FishZe/go-libonebot/protocol"
 	"github.com/FishZe/go-libonebot/util"
 	"github.com/fasthttp/websocket"
 	"net/http"
@@ -13,13 +14,13 @@ import (
 // OneBotV12WebsocketConfig HTTP 连接配置
 type OneBotV12WebsocketConfig struct {
 	// Host WebSocket 服务器监听 IP
-	Host string
+	Host string `yaml:"host" json:"host" default:""`
 	// Port WebSocket 服务器监听端口
-	Port int
+	Port int `yaml:"port" json:"port" default:""`
 	// AccessToken WebSocket 服务器监听端口
-	AccessToken string
+	AccessToken string `yaml:"access_token" json:"access_token" default:""`
 	// TimeOut 超时时间
-	TimeOut int
+	TimeOut int `yaml:"time_out" json:"time_out" default:"5000"`
 }
 
 // OneBotV12ConnectWebsocket websocket链接
@@ -68,15 +69,19 @@ func (c *OneBotV12ConnectWebsocket) Send(b []byte, t int, e string) error {
 	return nil
 }
 
-// BindReceiveFunc 绑定接收函数
-func (c *OneBotV12ConnectWebsocket) BindReceiveFunc(f func([]byte) (string, error)) {
+// SetCallBackFunc 绑定接收函数
+func (c *OneBotV12ConnectWebsocket) SetCallBackFunc(f OneBotV12ConnectCallBackFunc) {
 	c.receiveFunc = f
 }
 
 // NewOneBotV12ConnectWebsocket 创建websocket连接实现
-func NewOneBotV12ConnectWebsocket(config *OneBotV12WebsocketConfig) (*OneBotV12ConnectWebsocket, error) {
+func NewOneBotV12ConnectWebsocket(_ protocol.OneBotConfig, c any) (OneBotV12Connect, error) {
 	onebot := OneBotV12ConnectWebsocket{}
-	onebot.config = *config
+	config := c.(OneBotV12WebsocketConfig)
+	if config.TimeOut <= 0 {
+		config.TimeOut = 5000
+	}
+	onebot.config = config
 	err := onebot.Start()
 	if err != nil {
 		return nil, err
